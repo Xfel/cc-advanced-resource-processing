@@ -24,6 +24,72 @@ import dan200.turtle.api.ITurtlePeripheral;
  */
 public abstract class AbstractPeripheral implements ITurtlePeripheral {
 
+	public static String getStringArg(Object[] arguments, int index) {
+		if (index < arguments.length && arguments[index] != null) {
+			return arguments[index].toString();
+		}
+		throw new IllegalArgumentException("arg " + (index + 1)
+				+ ": string expected");
+	}
+
+	public static String getStringArg(Object[] arguments, int index, String def) {
+		if (index < arguments.length && arguments[index] != null) {
+			return arguments[index].toString();
+		}
+		return def;
+	}
+
+	public static Number getNumberArg(Object[] arguments, int index) {
+		if (index < arguments.length) {
+			if (arguments[index] instanceof Number) {
+				return (Number) arguments[index];
+			} else if (arguments[index] instanceof String) {
+				// lua tonumber adaption
+				try {
+					return Double.parseDouble((String) arguments[index]);
+				} catch (NumberFormatException e) {
+					// parse failed.. throw error
+				}
+			}
+		}
+
+		throw new IllegalArgumentException("arg " + (index + 1)
+				+ ": number expected");
+	}
+
+	public static Number getNumberArg(Object[] arguments, int index, Number def) {
+		if (index < arguments.length) {
+			if (arguments[index] instanceof Number) {
+				return (Number) arguments[index];
+			} else if (arguments[index] instanceof String) {
+				try {
+					return Double.parseDouble((String) arguments[index]);
+				} catch (NumberFormatException e) {
+					// parse failed.. throw error
+				}
+			}
+		}
+
+		return def;
+	}
+
+	public static boolean getBooleanArg(Object[] arguments, int index) {
+		if (index >= arguments.length || arguments[index] == null
+				|| Boolean.FALSE.equals(arguments[index])) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public static Map<?, ?> getTableArg(Object[] arguments, int index) {
+		if (index < arguments.length && arguments[index] instanceof Map) {
+			return (Map<?, ?>) arguments[index];
+		}
+
+		return null;
+	}
+
 	private Map<IComputerAccess, String> attachedComputers;
 
 	/**
