@@ -15,12 +15,10 @@ public class TileExtended extends TileEntity {
 		return false;
 	}
 
-	public void onPlacedBy(EntityLiving player) {
+	public void onPlacedBy(EntityLiving entity) {
 	}
 
 	public void onDestroyed() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@SideOnly(Side.CLIENT)
