@@ -34,8 +34,8 @@ public class ResourceDatabase extends DatabaseAPI {
 		INSTANCE = new ResourceDatabase();
 
 		VanillaPropertyProvider vpp = new VanillaPropertyProvider();
-		registerItemPropertyProvider(vpp);
-		registerItemStackPropertyProvider(vpp);
+		INSTANCE.registerItemPropertyProvider(vpp);
+		INSTANCE.registerItemStackPropertyProvider(vpp);
 	}
 
 	public static ResourceDatabase instance() {
@@ -43,7 +43,7 @@ public class ResourceDatabase extends DatabaseAPI {
 	}
 
 	private BiMap<String, ItemKey> itemMapping = HashBiMap
-			.create(Item.itemsList.length);
+			.create(32000);
 
 	private HashSet<ItemKey> ignoredItems = new HashSet<ItemKey>();
 
@@ -60,7 +60,7 @@ public class ResourceDatabase extends DatabaseAPI {
 	@Override
 	public void registerItem(ItemKey item) {
 		itemMapping.put(
-				StringTranslate.getInstance().translateKey(item.getName()),
+				StringTranslate.getInstance().translateKey(item.getName()).toLowerCase(),
 				item);
 	}
 
@@ -84,8 +84,8 @@ public class ResourceDatabase extends DatabaseAPI {
 	}
 
 	public ItemKey getItem(String spec) {
-		if (itemMapping.containsKey(spec))
-			return itemMapping.get(spec);
+		if (itemMapping.containsKey(spec.toLowerCase()))
+			return itemMapping.get(spec.toLowerCase());
 
 		try {
 			ItemKey key = ItemKey.parse(spec);
@@ -103,7 +103,7 @@ public class ResourceDatabase extends DatabaseAPI {
 	}
 
 	public ItemKey lookupItem(String name) {
-		return itemMapping.get(name);
+		return itemMapping.get(name.toLowerCase());
 	}
 
 	public String getItemName(ItemKey key) {

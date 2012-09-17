@@ -12,6 +12,10 @@ import java.util.List;
 import net.minecraft.src.AxisAlignedBB;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.InventoryLargeChest;
+import net.minecraft.src.ItemStack;
+import net.minecraft.src.NBTTagCompound;
+import net.minecraft.src.NBTTagList;
+import net.minecraft.src.Slot;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.TileEntityChest;
 import net.minecraft.src.World;
@@ -67,6 +71,97 @@ public class InventoryTools {
 		}
 
 		return null;
+	}
+
+	public static boolean putItemStack(IInventory target, ItemStack stack,
+			boolean inverse) {
+		boolean success = false;
+		if (stack.isStackable()) {
+			int slot = inverse ? target.getSizeInventory() - 1 : 0;
+
+			while (stack.stackSize > 0
+					&& (!inverse && slot < target.getSizeInventory() || inverse
+							&& slot >= 0)) {
+				ItemStack invStack = target.getStackInSlot(slot);
+
+				if (invStack != null
+						&& invStack.itemID == stack.itemID
+						&& (!stack.getHasSubtypes() || stack.getItemDamage() == invStack
+								.getItemDamage())
+						&& ItemStack.func_77970_a(stack, invStack)) {
+					int newStackSize = invStack.stackSize + stack.stackSize;
+
+					if (newStackSize <= stack.getMaxStackSize()) {
+						stack.stackSize = 0;
+						invStack.stackSize = newStackSize;
+						target.onInventoryChanged();
+						success = true;
+					} else if (invStack.stackSize < stack.getMaxStackSize()) {
+						stack.stackSize -= stack.getMaxStackSize()
+								- invStack.stackSize;
+						invStack.stackSize = stack.getMaxStackSize();
+						target.onInventoryChanged();
+						success = true;
+					}
+				}
+
+				if (inverse) {
+					--slot;
+				} else {
+					++slot;
+				}
+			}
+		}
+
+		if (stack.stackSize > 0) {
+			int slot = inverse ? target.getSizeInventory() - 1 : 0;
+
+			while (!inverse && slot < target.getSizeInventory() || inverse
+					&& slot >= 0) {
+				ItemStack invStack = target.getStackInSlot(slot);
+
+				if (invStack == null) {
+					target.setInventorySlotContents(slot, stack.copy());
+					stack.stackSize = 0;
+					success = true;
+					break;
+				}
+
+				if (inverse) {
+					--slot;
+				} else {
+					++slot;
+				}
+			}
+		}
+
+		return success;
+	}
+
+	public static void loadInventory(IInventory inv, NBTTagList nbt) {
+		for (int i = 0; i < nbt.tagCount(); i++) {
+			NBTTagCompound itemTag = (NBTTagCompound) nbt.tagAt(i);
+			int slot = itemTag.getByte("Slot") & 0xFF;
+			if ((slot >= 0) && (slot < inv.getSizeInventory()))
+				inv.setInventorySlotContents(slot,
+						ItemStack.loadItemStackFromNBT(itemTag));
+		}
+	}
+
+	public static NBTTagList saveInventory(IInventory inv) {
+		NBTTagList nbt = new NBTTagList();
+
+		for (int slot = 0; slot < inv.getSizeInventory(); ++slot) {
+			ItemStack stack = inv.getStackInSlot(slot);
+			if (stack != null) {
+				NBTTagCompound itemTag = new NBTTagCompound();
+				itemTag.setByte("Slot", (byte) slot);
+				stack.writeToNBT(itemTag);
+				nbt.appendTag(itemTag);
+			}
+		}
+
+		return nbt;
 	}
 
 }

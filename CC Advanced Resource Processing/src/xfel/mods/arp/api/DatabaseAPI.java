@@ -17,21 +17,21 @@ import net.minecraft.src.ItemStack;
 public class DatabaseAPI {
 	protected static DatabaseAPI INSTANCE;
 
-	private static List<IItemPropertyProvider> itemPropertyProviders = new LinkedList<IItemPropertyProvider>();
+	private List<IItemPropertyProvider> itemPropertyProviders = new LinkedList<IItemPropertyProvider>();
 
-	private static List<IItemStackPropertyProvider> itemStackPropertyProviders = new LinkedList<IItemStackPropertyProvider>();
+	private List<IItemStackPropertyProvider> itemStackPropertyProviders = new LinkedList<IItemStackPropertyProvider>();
 
-	public static void registerItemStackPropertyProvider(
+	public void registerItemStackPropertyProvider(
 			IItemStackPropertyProvider provider) {
 		itemStackPropertyProviders.add(provider);
 	}
 
-	public static void registerItemPropertyProvider(
+	public void registerItemPropertyProvider(
 			IItemPropertyProvider provider) {
 		itemPropertyProviders.add(provider);
 	}
 
-	public static Map<String, Object> getItemProperties(ItemKey key) {
+	public Map<String, Object> getItemProperties(ItemKey key) {
 		HashMap<String, Object> hm = new HashMap<String, Object>();
 		hm.put("id", key.toString());
 		hm.put("name", key.getName());
@@ -43,10 +43,14 @@ public class DatabaseAPI {
 		return hm;
 	}
 
-	public static Map<String, Object> getItemStackProperties(ItemStack stack) {
+	public Map<String, Object> getItemStackProperties(ItemStack stack) {
 		HashMap<String, Object> hm = new HashMap<String, Object>();
 		hm.put("item", (new ItemKey(stack)).toString());
 		hm.put("stackSize", stack.stackSize);
+		
+		if(stack.isItemStackDamageable()){
+			hm.put("damage", stack.getItemDamage());
+		}
 
 		for (IItemStackPropertyProvider ipp : itemStackPropertyProviders) {
 			ipp.getProperties(stack, hm);

@@ -10,6 +10,7 @@ package xfel.mods.arp.common.peripheral.bind;
 import java.io.ObjectInputStream.GetField;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import com.google.common.primitives.Primitives;
 
 import dan200.computer.api.IComputerAccess;
 import xfel.mods.arp.common.peripheral.AbstractPeripheral;
+import xfel.mods.arp.common.utils.reflection.PrimitiveTypeHelper;
 
 public abstract class AbstractAnnotatedPeripheral extends AbstractPeripheral {
 
@@ -102,6 +104,10 @@ public abstract class AbstractAnnotatedPeripheral extends AbstractPeripheral {
 				for (int j = i; j < arguments.length; j++) {
 					list.add(adaptArg(arguments[j], cls, argannos[i], j));
 				}
+				if (cls.isPrimitive()) {
+					newargs[i] = PrimitiveTypeHelper.getInstance(cls)
+							.convertToTypeArray(list);
+				}
 				newargs[i] = list.toArray();
 			} else {
 				Object argval = null;
@@ -113,7 +119,22 @@ public abstract class AbstractAnnotatedPeripheral extends AbstractPeripheral {
 			}
 		}
 
-		return null;
+		Object result;
+		try {
+			result = method.invoke(this, newargs);
+		} catch (InvocationTargetException e) {
+			throw (Exception) e.getTargetException();
+		}
+
+		if (result == null) {
+			return new Object[0];
+		}
+
+		if (result.getClass().isArray()) {
+			return (Object[]) result;
+		}
+
+		return new Object[] { result };
 	}
 
 	private Object adaptArg(Object argval, Class<?> cls,
@@ -135,36 +156,40 @@ public abstract class AbstractAnnotatedPeripheral extends AbstractPeripheral {
 				return argval;
 			}
 
-			// TODO
-			if (Number.class.isAssignableFrom(wrapper)) {
-
-			}
+			return PrimitiveTypeHelper.getInstance(cls).convertToType(argval);
 		}
 
 		if (cls.isInstance(argval) || argval == null) {
 			return argval;
 		}
-		
+
 		if (argval instanceof Map) {
 			Map table = (Map) argval;
-			
-			if(List.class.isAssignableFrom(cls)|| cls.isArray()){
-				Class<?> ctype=cls.isArray()?cls.getComponentType():Object.class;
-				
-				ArrayList<Object> list=new ArrayList<Object>();
-				
-				for (int i = 1; table.containsKey(Integer.valueOf(i)); i++) {
-					list.add(adaptArg(table.get(Integer.valueOf(i)), ctype, new Annotation[0], argIndex));
+
+			if (List.class.isAssignableFrom(cls) || cls.isArray()) {
+				Class<?> ctype = cls.isArray() ? cls.getComponentType()
+						: Object.class;
+
+				ArrayList<Object> list = new ArrayList<Object>();
+
+				for (int i = 1; table.containsKey(Double.valueOf(i)); i++) {
+					list.add(adaptArg(table.get(Double.valueOf(i)), ctype,
+							new Annotation[0], argIndex));
 				}
-				
-				if(cls.isArray()){
-					return list.toArray((Object[]) Array.newInstance(ctype, list.size()));
+
+				if (cls.isArray()) {
+					if (ctype.isPrimitive()) {
+						return PrimitiveTypeHelper.getInstance(ctype)
+								.convertToTypeArray(list);
+					}
+					return list.toArray((Object[]) Array.newInstance(ctype,
+							list.size()));
 				}
 				return list;
 			}
-			
+
 		}
-		
+
 		throw new Exception("arg " + (argIndex + 1) + ": "
 				+ cls.getSimpleName() + " expected");
 	}

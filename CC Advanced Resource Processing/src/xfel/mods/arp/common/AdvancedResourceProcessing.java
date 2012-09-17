@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import xfel.mods.arp.common.CommonProxy;
 import xfel.mods.arp.common.network.NetworkHandler;
+import xfel.mods.arp.core.ResourceDatabase;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.FMLLog;
@@ -56,6 +57,9 @@ public class AdvancedResourceProcessing {
 	@PreInit
 	public void loadConfig(FMLPreInitializationEvent evt) {
 		evt.getModMetadata().version = MOD_VERSION;
+		
+		// create the database
+		ResourceDatabase.instance();
 	}
 
 	@Init
