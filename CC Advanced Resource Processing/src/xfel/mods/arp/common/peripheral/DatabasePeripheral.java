@@ -12,13 +12,7 @@ import xfel.mods.arp.core.ResourceDatabase;
 
 public class DatabasePeripheral extends AbstractAnnotatedPeripheral {
 	
-	public static void main(String[] args) {
-		IPeripheral peri=new DatabasePeripheral();
-		
-		System.out.println(Arrays.toString(peri.getMethodNames()));
-	}
-	
-	private ResourceDatabase database;
+	protected final ResourceDatabase database;
 	
 	public DatabasePeripheral() {
 		this("database");
