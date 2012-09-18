@@ -10,6 +10,8 @@ package xfel.mods.arp.common.utils;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
+import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.ISidedInventory;
 
 /**
  * Maps a sub-part of an inventory.
@@ -17,15 +19,24 @@ import net.minecraft.src.ItemStack;
  * @author Xfel
  * 
  */
-public class InventoryMapper implements IInventory {
+public class InventoryWrapper implements IInventory {
 
-	private IInventory target;
+	protected final IInventory target;
 
-	private int start;
+	protected final int start;
 
-	private int size;
+	protected final int size;
 
-	public InventoryMapper(IInventory target, int start, int size) {
+	public InventoryWrapper(IInventory target){
+		this(target,0,target.getSizeInventory());
+	}
+	
+	public InventoryWrapper(ISidedInventory sidedTarget, ForgeDirection side) {
+		this(sidedTarget, sidedTarget.getStartInventorySide(side), sidedTarget
+				.getSizeInventorySide(side));
+	}
+
+	public InventoryWrapper(IInventory target, int start, int size) {
 		super();
 		this.target = target;
 		this.start = start;

@@ -33,13 +33,13 @@ public class InventoryTools {
 
 		if (inv instanceof ISpecialInventory) {
 			ISpecialInventory spi = (ISpecialInventory) inv;
-			return spi;
+			return new SpecialInventoryWrapper(spi, side.getOpposite());
 		}else
 		if (inv instanceof ISidedInventory) {
 			ISidedInventory sinv = (ISidedInventory) inv;
 
 			ForgeDirection invertedSide = side.getOpposite();
-			return new InventoryMapper(sinv,
+			return new InventoryWrapper(sinv,
 					sinv.getStartInventorySide(invertedSide),
 					sinv.getSizeInventorySide(invertedSide));
 		}

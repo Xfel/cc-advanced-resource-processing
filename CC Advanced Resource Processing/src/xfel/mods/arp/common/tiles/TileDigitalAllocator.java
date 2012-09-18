@@ -18,10 +18,17 @@ import xfel.mods.arp.base.blocks.TileOrientable;
 import xfel.mods.arp.common.AdvancedResourceProcessing;
 import xfel.mods.arp.common.CommonProxy;
 
+import buildcraft.api.core.Orientations;
+import buildcraft.api.inventory.ISpecialInventory;
+import buildcraft.api.transport.IPipeConnection;
+import buildcraft.api.transport.IPipeEntry;
+import buildcraft.api.transport.IPipedItem;
+
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 
-public class TileDigitalAllocator extends TileOrientable {
+public class TileDigitalAllocator extends TileOrientable implements
+		ISpecialInventory, IPipeConnection {
 
 	public static final int FILTER_SIZE = 6;
 	public static final int BUFFER_SIZE = 9;
@@ -160,11 +167,11 @@ public class TileDigitalAllocator extends TileOrientable {
 	public int getBufferStart() {
 		return bufferStart;
 	}
-	
+
 	public int getBufferPos() {
 		return bufferPos;
 	}
-	
+
 	public boolean isBufferFull() {
 		int np = bufferPos + 1 % BUFFER_SIZE;
 		return np == bufferStart;
@@ -209,7 +216,7 @@ public class TileDigitalAllocator extends TileOrientable {
 	}
 
 	// storage/network control
-	
+
 	@Override
 	public void readPacket(DataInput in) throws IOException {
 		super.readPacket(in);
@@ -268,20 +275,20 @@ public class TileDigitalAllocator extends TileOrientable {
 
 		bufferPos = nbt.getByte("BufferPos") & 0xff;
 		bufferStart = nbt.getByte("BufferStart") & 0xff;
-		
-		for (int slot = 0; slot < invobj.getSizeInventory(); ++slot)
-        {
+
+		for (int slot = 0; slot < invobj.getSizeInventory(); ++slot) {
 			invobj.setInventorySlotContents(slot, null);
-        }
+		}
 
 		NBTTagList itemList = nbt.getTagList("Items");
-		
+
 		for (int i = 0; i < itemList.tagCount(); ++i) {
 			NBTTagCompound itemTag = (NBTTagCompound) itemList.tagAt(i);
 			int slot = itemTag.getByte("Slot") & 255;
 
 			if (slot >= 0 && slot < invobj.getInventoryStackLimit()) {
-				invobj.setInventorySlotContents(slot,  ItemStack.loadItemStackFromNBT(itemTag));
+				invobj.setInventorySlotContents(slot,
+						ItemStack.loadItemStackFromNBT(itemTag));
 			}
 		}
 
@@ -311,7 +318,7 @@ public class TileDigitalAllocator extends TileOrientable {
 
 		nbt.setByte("BufferPos", (byte) bufferPos);
 		nbt.setByte("BufferStart", (byte) bufferStart);
-		
+
 		NBTTagList itemList = new NBTTagList();
 
 		for (int slot = 0; slot < invobj.getSizeInventory(); ++slot) {
@@ -326,21 +333,21 @@ public class TileDigitalAllocator extends TileOrientable {
 
 		nbt.setTag("Items", itemList);
 	}
-	
+
 	// gui code
-	
-	
+
 	@Override
-	public boolean onActivation(EntityPlayer player, ForgeDirection side, float offsetX,
-			float offsetY, float offsetZ) {
-		player.openGui(AdvancedResourceProcessing.instance, CommonProxy.GUID_ALLOCATOR, worldObj, xCoord, yCoord, zCoord);
+	public boolean onActivation(EntityPlayer player, ForgeDirection side,
+			float offsetX, float offsetY, float offsetZ) {
+		player.openGui(AdvancedResourceProcessing.instance,
+				CommonProxy.GUID_ALLOCATOR, worldObj, xCoord, yCoord, zCoord);
 		return true;
 	}
-	
+
 	public IInventory getInventory() {
 		return invobj;
 	}
-	
+
 	@Override
 	public void onDestroyed() {
 		Random rnd = new Random();
@@ -380,22 +387,95 @@ public class TileDigitalAllocator extends TileOrientable {
 			}
 		}
 	}
-	
+
 	// core logic
 	@Override
 	public void onEntityCollided(Entity entity) {
-		if (entity instanceof EntityItem&&!isBufferFull()) {
+		if (entity instanceof EntityItem && !isBufferFull()) {
 			EntityItem item = (EntityItem) entity;
-			
+
 			offer(item.item);
 			item.setDead();
 		}
 	}
-	
+
 	@Override
 	public void updateEntity() {
-		if(!isBufferEmpty()){
-			
+		if (!isBufferEmpty()) {
+
 		}
+	}
+
+	// inventory implementation
+
+	public ItemStack getStackInSlot(int slot) {
+		return invobj.getStackInSlot(slot + FILTER_SIZE);
+	}
+
+	public ItemStack decrStackSize(int slot, int amount) {
+		return invobj.decrStackSize(slot + FILTER_SIZE, amount);
+	}
+
+	public ItemStack getStackInSlotOnClosing(int slot) {
+		return invobj.getStackInSlotOnClosing(slot + FILTER_SIZE);
+	}
+
+	public void setInventorySlotContents(int slot, ItemStack stack) {
+		invobj.setInventorySlotContents(slot + FILTER_SIZE, stack);
+	}
+
+	public int getSizeInventory() {
+		return BUFFER_SIZE;
+	}
+
+	public String getInvName() {
+		return "inventory.allocator";
+	}
+
+	public int getInventoryStackLimit() {
+		return 64;
+	}
+
+	public boolean isUseableByPlayer(EntityPlayer player) {
+		if (this.worldObj.getBlockTileEntity(this.xCoord, this.yCoord,
+				this.zCoord) != this) {
+			return false;
+		}
+
+		return player.getDistanceSq(this.xCoord + 0.5D, this.yCoord + 0.5D,
+				this.zCoord + 0.5D) <= 64.0D;
+	}
+
+	public void openChest() {
+	}
+
+	public void closeChest() {
+	}
+
+	// buildcraft interop
+
+	@Override
+	public boolean isPipeConnected(Orientations with) {
+		ForgeDirection dir = with.toDirection();
+		return dir == getInputSide() || dir == getOutputSide();
+	}
+
+	@Override
+	public int addItem(ItemStack stack, boolean doAdd, Orientations from) {
+		if (isBufferFull() || !isOpen() || from.toDirection() != getInputSide()
+				|| !isAcceptedItem(stack))
+			return 0;
+
+		if (doAdd) {
+			offer(stack.copy());
+		}
+
+		return stack.stackSize;
+	}
+
+	@Override
+	public ItemStack[] extractItem(boolean doRemove, Orientations from,
+			int maxItemCount) {
+		return new ItemStack[0];
 	}
 }
