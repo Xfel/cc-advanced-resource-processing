@@ -13,8 +13,11 @@ import net.minecraft.src.InventoryBasic;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.NBTTagList;
+import net.minecraft.src.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import xfel.mods.arp.base.blocks.TileOrientable;
+import xfel.mods.arp.base.utils.InventoryTools;
+import xfel.mods.arp.base.utils.WorldCoordinate;
 import xfel.mods.arp.common.AdvancedResourceProcessing;
 import xfel.mods.arp.common.CommonProxy;
 
@@ -42,18 +45,46 @@ public class TileDigitalAllocator extends TileOrientable implements
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getTextureFromSide(int side) {
-//		if (side == getOrientation().ordinal()) {
-//			if (side == 0 || side == 1) {
-//				return 4;
-//			}
-//			return 3;
-//		}
-		if (side == 0 || side == 1) {
+		int backStateShift;
+		int frontStateShift;
+
+		if (!this.active) {
+			frontStateShift = 8;
+			backStateShift = 8;
+		} else {
+			if (reverseMode) {
+				frontStateShift = 4;
+				if (isBufferEmpty())
+					backStateShift = 4;
+				else
+					backStateShift = 8;
+			} else {
+				if (isBufferEmpty())
+					frontStateShift = 0;
+				else {
+					frontStateShift = 8;
+				}
+				backStateShift = 0;
+			}
+		}
+		if (side == getInputSide().ordinal()) {
+			if ((side == 1) || (side == 0)) {
+				return 11 + frontStateShift;
+			}
+			return 10 + frontStateShift;
+		}
+		if (side == getOutputSide().ordinal()) {
+			if ((side == 1) || (side == 0)) {
+				return 9 + backStateShift;
+			}
+			return 8 + backStateShift;
+		}
+		if ((side == 1) || (side == 0)) {
 			return 0;
 		}
 		return 1;
 	}
-	
+
 	// speed control
 	private int progress;
 
@@ -409,8 +440,12 @@ public class TileDigitalAllocator extends TileOrientable implements
 	// core logic
 	@Override
 	public void onEntityCollided(Entity entity) {
-		if (entity instanceof EntityItem && !isBufferFull()) {
+		if (entity instanceof EntityItem && !isBufferFull() && isOpen()) {
 			EntityItem item = (EntityItem) entity;
+
+			if (!isAcceptedItem(item.item)) {
+				return;
+			}
 
 			offer(item.item);
 			item.setDead();
@@ -420,7 +455,27 @@ public class TileDigitalAllocator extends TileOrientable implements
 	@Override
 	public void updateEntity() {
 		if (!isBufferEmpty()) {
+			ItemStack stack = poll();
 
+			WorldCoordinate wc = new WorldCoordinate(this);
+
+			TileEntity destTile = wc.move(getOutputSide(), 1)
+					.getBlockTileEntity();
+			if (destTile instanceof IPipeEntry
+					&& ((IPipeEntry) destTile).acceptItems()) {
+				((IPipeEntry) destTile).entityEntering(stack, Orientations
+						.values()[getOutputSide().getOpposite().ordinal()]);
+			} else {
+				IInventory inv = InventoryTools.getInventoryAtSide(wc,
+						getOutputSide());
+				if (inv instanceof ISpecialInventory) {
+					ISpecialInventory isi = (ISpecialInventory) inv;
+					stack.stackSize = isi.addItem(stack, true, Orientations
+							.values()[getOutputSide().getOpposite().ordinal()]);
+				} else {
+					InventoryTools.putItemStack(inv, stack, false);
+				}
+			}
 		}
 	}
 
@@ -479,6 +534,7 @@ public class TileDigitalAllocator extends TileOrientable implements
 	@Override
 	public boolean isPipeConnected(Orientations with) {
 		ForgeDirection dir = with.toDirection();
+		System.out.println(dir+"/"+getOrientation());
 		return dir == getInputSide() || dir == getOutputSide();
 	}
 

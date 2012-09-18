@@ -33,8 +33,8 @@ public class BlockAdvancedMachine extends BlockSubtypes {
 
 		registerSubtype(TYPE_INVENTORY_INTERFACE, "iinterface",
 				TileInventoryInterface.class);
-//		registerSubtype(TYPE_DIGITAL_WORKBENCH, "workbench",
-//				TileDigitalWorkbench.class);
+		// registerSubtype(TYPE_DIGITAL_WORKBENCH, "workbench",
+		// TileDigitalWorkbench.class);
 		registerSubtype(TYPE_DIGITAL_ALLOCATOR, "allocator",
 				TileDigitalAllocator.class);
 	}
@@ -49,13 +49,20 @@ public class BlockAdvancedMachine extends BlockSubtypes {
 			if (side == 4) {
 				return 3;
 			}
+		} else if (metadata == TYPE_DIGITAL_ALLOCATOR) {
+			if (side == 2) {
+				return 8;
+			}
+			if (side == 3) {
+				return 10;
+			}
 		}
 		if (side == 0 || side == 1) {
 			return 0;
 		}
 		return 1;
 	}
-	
+
 	@Override
 	public boolean isOpaqueCube() {
 		return false;

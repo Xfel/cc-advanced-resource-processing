@@ -60,10 +60,9 @@ public class WorldCoordinate {
 		return z;
 	}
 
-	public void move(ForgeDirection dir, int dist) {
-		x += dist * dir.offsetX;
-		y += dist * dir.offsetY;
-		z += dist * dir.offsetZ;
+	public WorldCoordinate move(ForgeDirection dir, int dist) {
+		return new WorldCoordinate(world, x + dist * dir.offsetX, y + dist
+				* dir.offsetY, z + dist * dir.offsetZ);
 	}
 
 	public int getBlockId() {
@@ -85,12 +84,10 @@ public class WorldCoordinate {
 
 		return null;
 	}
-	
-	public AxisAlignedBB getBlockBB(){
-		return  AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(
-				x, y, z, x + 1, y + 1, z + 1);
+
+	public AxisAlignedBB getBlockBB() {
+		return AxisAlignedBB.getAABBPool().addOrModifyAABBInPool(x, y, z,
+				x + 1, y + 1, z + 1);
 	}
-	
-	
 
 }

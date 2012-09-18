@@ -24,7 +24,7 @@ import com.google.common.primitives.Primitives;
 
 import dan200.computer.api.IComputerAccess;
 import xfel.mods.arp.base.peripheral.AbstractPeripheral;
-import xfel.mods.arp.common.utils.reflection.PrimitiveTypeHelper;
+import xfel.mods.arp.base.utils.reflection.PrimitiveTypeHelper;
 
 public abstract class AbstractAnnotatedPeripheral extends AbstractPeripheral {
 
