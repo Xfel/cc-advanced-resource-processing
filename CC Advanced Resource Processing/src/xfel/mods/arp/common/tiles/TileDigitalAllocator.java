@@ -27,6 +27,9 @@ import buildcraft.api.transport.IPipedItem;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 
+import cpw.mods.fml.common.Side;
+import cpw.mods.fml.common.asm.SideOnly;
+
 public class TileDigitalAllocator extends TileOrientable implements
 		ISpecialInventory, IPipeConnection {
 
@@ -36,6 +39,21 @@ public class TileDigitalAllocator extends TileOrientable implements
 	private InventoryBasic invobj = new InventoryBasic("Digital Allocator",
 			FILTER_SIZE + BUFFER_SIZE);
 
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int getTextureFromSide(int side) {
+//		if (side == getOrientation().ordinal()) {
+//			if (side == 0 || side == 1) {
+//				return 4;
+//			}
+//			return 3;
+//		}
+		if (side == 0 || side == 1) {
+			return 0;
+		}
+		return 1;
+	}
+	
 	// speed control
 	private int progress;
 
@@ -409,19 +427,23 @@ public class TileDigitalAllocator extends TileOrientable implements
 	// inventory implementation
 
 	public ItemStack getStackInSlot(int slot) {
-		return invobj.getStackInSlot(slot + FILTER_SIZE);
+		return invobj.getStackInSlot((slot + bufferPos) % BUFFER_SIZE
+				+ FILTER_SIZE);
 	}
 
 	public ItemStack decrStackSize(int slot, int amount) {
-		return invobj.decrStackSize(slot + FILTER_SIZE, amount);
+		return invobj.decrStackSize((slot + bufferPos) % BUFFER_SIZE
+				+ FILTER_SIZE, amount);
 	}
 
 	public ItemStack getStackInSlotOnClosing(int slot) {
-		return invobj.getStackInSlotOnClosing(slot + FILTER_SIZE);
+		return invobj.getStackInSlotOnClosing((slot + bufferPos) % BUFFER_SIZE
+				+ FILTER_SIZE);
 	}
 
 	public void setInventorySlotContents(int slot, ItemStack stack) {
-		invobj.setInventorySlotContents(slot + FILTER_SIZE, stack);
+		invobj.setInventorySlotContents((slot + bufferPos) % BUFFER_SIZE
+				+ FILTER_SIZE, stack);
 	}
 
 	public int getSizeInventory() {

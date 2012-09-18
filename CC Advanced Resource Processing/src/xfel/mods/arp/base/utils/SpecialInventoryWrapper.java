@@ -1,4 +1,4 @@
-package xfel.mods.arp.common.utils;
+package xfel.mods.arp.base.utils;
 
 import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
@@ -9,7 +9,7 @@ import buildcraft.api.inventory.ISpecialInventory;
 public class SpecialInventoryWrapper extends InventoryWrapper implements
 		ISpecialInventory {
 
-	protected Orientations side;
+	protected final Orientations side;
 
 	public SpecialInventoryWrapper(ISpecialInventory target, ForgeDirection side) {
 		super(target);

@@ -11,10 +11,10 @@ import java.util.Collections;
 
 import net.minecraft.src.IInventory;
 import xfel.mods.arp.base.blocks.TileOrientable;
+import xfel.mods.arp.base.utils.InventoryTools;
+import xfel.mods.arp.base.utils.WorldCoordinate;
 import xfel.mods.arp.common.peripheral.InventoryPeripheral;
 import xfel.mods.arp.common.peripheral.InventoryPeripheral.IInventoryProvider;
-import xfel.mods.arp.common.utils.InventoryTools;
-import xfel.mods.arp.common.utils.WorldCoordinate;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 import dan200.computer.api.IComputerAccess;

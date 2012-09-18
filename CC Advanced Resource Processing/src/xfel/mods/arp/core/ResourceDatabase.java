@@ -17,6 +17,7 @@ import net.minecraft.src.ItemStack;
 import net.minecraft.src.StringTranslate;
 import xfel.mods.arp.api.DatabaseAPI;
 import xfel.mods.arp.api.ItemKey;
+import xfel.mods.arp.common.AdvancedResourceProcessing;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -128,7 +129,7 @@ public class ResourceDatabase extends DatabaseAPI {
 		for (int i = 0; i < Item.itemsList.length; i++) {
 			Item item = Item.itemsList[i];
 			if (item != null) {
-				item.getSubItems(i, null, items);
+				AdvancedResourceProcessing.sideHandler.getCreativeSubtypes(item, items);
 			}
 		}
 

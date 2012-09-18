@@ -18,11 +18,11 @@ import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.NBTTagList;
 import net.minecraftforge.common.ForgeDirection;
 import xfel.mods.arp.base.blocks.TileOrientable;
+import xfel.mods.arp.base.utils.InventoryTools;
+import xfel.mods.arp.base.utils.WorldCoordinate;
 import xfel.mods.arp.common.AdvancedResourceProcessing;
 import xfel.mods.arp.common.peripheral.InventoryPeripheral;
 import xfel.mods.arp.common.peripheral.InventoryPeripheral.IInventoryProvider;
-import xfel.mods.arp.common.utils.InventoryTools;
-import xfel.mods.arp.common.utils.WorldCoordinate;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 import dan200.computer.api.IComputerAccess;
@@ -61,6 +61,9 @@ public class TileDigitalChest extends TileOrientable implements IPeripheral,
 
 	@Override
 	public IInventory getKeyedInventory(String key) {
+		if(key.equals("self"))
+			return this;
+		
 		ForgeDirection dir = getWorldSide(key, getOrientation());
 
 		return InventoryTools.getInventoryAtSide(new WorldCoordinate(this), dir);
