@@ -80,9 +80,11 @@ public class AdvancedResourceProcessing {
 
 	@Init
 	public void init(FMLInitializationEvent evt) {
+		blockAdvancedMachine=new BlockAdvancedMachine(2040);
 		GameRegistry.registerBlock(blockAdvancedMachine, ItemBlockSubtypes.class);
 
-		GameRegistry.registerBlock(blockDigitalChest, ItemBlockSubtypes.class);
+		blockDigitalChest=new BlockDigitalChest(2041);
+		GameRegistry.registerBlock(blockDigitalChest);
 
 		ItemStack database = new ItemStack(blockAdvancedMachine, 1,
 				BlockAdvancedMachine.TYPE_DATABASE);

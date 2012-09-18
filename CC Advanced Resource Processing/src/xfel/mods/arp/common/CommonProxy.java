@@ -9,9 +9,13 @@ package xfel.mods.arp.common;
 
 import java.util.List;
 
+import xfel.mods.arp.common.container.ContainerDigitalAllocator;
+import xfel.mods.arp.common.tiles.TileDigitalAllocator;
+
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
+import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 import cpw.mods.fml.common.network.IGuiHandler;
 
@@ -25,9 +29,14 @@ public class CommonProxy implements IGuiHandler{
 	}
 
 	@Override
-	public Object getServerGuiElement(int ID, EntityPlayer player, World world,
+	public Object getServerGuiElement(int guid, EntityPlayer player, World world,
 			int x, int y, int z) {
-		// TODO Auto-generated method stub
+		switch (guid) {
+		case GUID_ALLOCATOR:
+			TileEntity tile = world.getBlockTileEntity(x, y, z);
+			
+			return new ContainerDigitalAllocator(player.inventory, (TileDigitalAllocator) tile);
+		}
 		return null;
 	}
 

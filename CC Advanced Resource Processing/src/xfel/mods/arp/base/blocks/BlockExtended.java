@@ -1,5 +1,7 @@
 package xfel.mods.arp.base.blocks;
 
+import java.util.Random;
+
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 import net.minecraft.src.Block;
@@ -82,6 +84,15 @@ public abstract class BlockExtended extends Block {
 		}
 		
 		world.removeBlockTileEntity(x, y, z);
+	}
+	
+	@Override
+	public void onBlockEventReceived(World world, int x, int y, int z, int event, int arg) {
+		TileEntity te = world.getBlockTileEntity(x, y, z);
+
+		if (te!=null) {
+			te.receiveClientEvent(event, arg);
+		}
 	}
 
 }

@@ -341,11 +341,15 @@ public class TileDigitalChest extends TileOrientable implements IPeripheral,
 		if (event == 1) {
 			numUsingPlayers = arg;
 		}
+		System.out.println("Event:"+event);
+		
+			System.out.println("Recieved:"+numUsingPlayers);
 	}
 
 	public void openChest() {
 		numUsingPlayers++;
-
+		
+		System.out.println("send:"+numUsingPlayers);
 		worldObj.addBlockEvent(xCoord, yCoord, zCoord,
 				AdvancedResourceProcessing.blockDigitalChest.blockID, 1,
 				numUsingPlayers);
@@ -354,6 +358,7 @@ public class TileDigitalChest extends TileOrientable implements IPeripheral,
 	public void closeChest() {
 		numUsingPlayers--;
 
+		System.out.println("send:"+numUsingPlayers);
 		worldObj.addBlockEvent(xCoord, yCoord, zCoord,
 				AdvancedResourceProcessing.blockDigitalChest.blockID, 1,
 				numUsingPlayers);

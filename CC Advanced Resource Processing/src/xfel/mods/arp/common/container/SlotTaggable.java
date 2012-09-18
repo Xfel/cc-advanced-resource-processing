@@ -18,6 +18,16 @@ public class SlotTaggable extends Slot {
 	}
 
 	@Override
+	public boolean isItemValid(ItemStack stack) {
+		if (stack == null) {
+			super.putStack(null);
+		} else {
+			super.putStack(new ItemStack(stack.itemID, 1, stack.getItemDamage()));
+		}
+		return false;
+	}
+	
+	@Override
 	public void putStack(ItemStack stack) {
 		if (stack == null) {
 			super.putStack(null);
