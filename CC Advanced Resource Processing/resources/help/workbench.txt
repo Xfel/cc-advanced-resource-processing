@@ -1,0 +1,35 @@
+version @arp.version@
+Digital Workbench/crafting table
+
+Functions:
+
+workbench.isPresent(side)
+Returns true if the peripheral at the specified side is a digital workbench.
+
+workbench.setRecipe(side, recipe)
+Set the recipe for the workbench. Returns true if the recipe was valid. Recipe specification see database help.
+
+workbench.getRecipe(side)
+Returns the currently installed recipe. Returns nil if the recipe isn't valid.
+
+workbench.getResult(side)
+Returns the result of the currently installed recipe. Returns nil if the recipe isn't valid.
+
+workbench.isRecipeValid(side)
+Returns true if the currently installed recipe is valid.
+
+workbench.isActive(side)
+workbench.activate(side, active)
+Gets/sets a flag whether the workbench should operate. It will only work if it is active and if the recipe is valid.
+
+workbench.isWorking(side)
+Returns whether the workbench is actually operating. That means it is not only active and valid, but also powered.
+
+workbench.craft(side, n)
+Crafts n times. It activates/deactivates automatically. Note that n specifies the number of times to craft, not the number of items to produce.
+
+
+Events:
+
+"crafted" when the workbench successfully crafts an item. params: side
+"missing_resource" when the workbench doesn't find sufficient recources to craft. params: side, missing_item_name

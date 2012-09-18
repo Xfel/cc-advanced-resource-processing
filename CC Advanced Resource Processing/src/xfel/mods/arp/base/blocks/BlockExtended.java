@@ -1,4 +1,4 @@
-package xfel.mods.arp.common.blocks;
+package xfel.mods.arp.base.blocks;
 
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;

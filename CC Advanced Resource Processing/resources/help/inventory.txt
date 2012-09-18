@@ -1,0 +1,58 @@
+version @arp.version@
+Inventory reader
+
+Functions:
+
+inventory.isPresent(side, [key])
+Checks whether there is a inventory reader finding an in inventory attached on the given side. 
+The key allows to access multiple inventories over one peripheral if supported (eg. for the Digital Chest it's the side relative to the chest's front side).
+
+inventory.get(side,key)
+returns an inventory object, or nil if there is no readable inventory. It throws an error if there is no inventory Reader Peripheral on the specified side.
+
+The Inventory object has the following methods and properties:
+
+inv.name
+The inventory type, eg. Furnace, Chest, or Turtle
+
+inv.size
+number of available inventory slots
+
+inv.stackLimit
+how many items can be stored in one slot
+
+inv[i]
+returns the item stack in slot i. For item stack objects, see db.stack(...)
+
+inv:list([includeall])
+same as inventory.listContents(inv, includeall)
+
+inv:isValid()
+same as inventory.isPresent(inv.side)
+
+inv:contains(item, [amount])
+same as inventory.contains(inv, item, amount)
+
+inv:getStoredAmount(item)
+same as inventory.getStoredAmount(inv, item)
+
+inventory.getStoredAmount(inv, item)
+Returns the total amount of items of the given type in the inventory (across stacks)
+
+inventory.contains(inv, item, [n])
+Checks whether there are at least n items of the specified type in the inventory.
+
+inventory.listContents(inv, [includeall])
+Unfortunately, it is not possible to iterate over an inventory object with 
+for slot, stack in ipairs(inv) do ...
+
+As workaround, you can write:
+for slot, stack in inventory.listContents(inv) do ...
+
+Note that this functions skips empty slots. to include them all, you have to call inventory.listContents(inv, true)
+
+inventory.swap(inv1, slot1, inv2, slot2)
+This will swap the two stacks described here. You can swap stacks from different inventories only if they run over the same peripheral (same side, different keys). You can also leave out the second inventory parameter, which means that the same inventory is not changed.
+
+inventory.move(amount, inv1, slot1, inv2, slot2)
+will move amount items from the first specified slot to the second. The constraints are the same as for the swap function.

@@ -6,8 +6,8 @@ import java.util.Map;
 import dan200.computer.api.IPeripheral;
 
 import xfel.mods.arp.api.ItemKey;
-import xfel.mods.arp.common.peripheral.bind.AbstractAnnotatedPeripheral;
-import xfel.mods.arp.common.peripheral.bind.PeripheralMethod;
+import xfel.mods.arp.base.peripheral.bind.AbstractAnnotatedPeripheral;
+import xfel.mods.arp.base.peripheral.bind.PeripheralMethod;
 import xfel.mods.arp.core.ResourceDatabase;
 
 public class DatabasePeripheral extends AbstractAnnotatedPeripheral {

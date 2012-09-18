@@ -1,7 +1,8 @@
-package xfel.mods.arp.common.blocks;
+package xfel.mods.arp.base.blocks;
 
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
+import net.minecraft.src.Entity;
 import net.minecraft.src.EntityLiving;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.TileEntity;
@@ -24,6 +25,9 @@ public class TileExtended extends TileEntity {
 	@SideOnly(Side.CLIENT)
 	public int getTextureFromSide(int side) {
 		return 0;
+	}
+
+	public void onEntityCollided(Entity entity) {
 	}
 
 }

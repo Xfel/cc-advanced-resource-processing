@@ -7,13 +7,18 @@
  */
 package xfel.mods.arp.common;
 
+import java.util.List;
+
 import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.Item;
+import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
 import cpw.mods.fml.common.network.IGuiHandler;
 
 public class CommonProxy implements IGuiHandler{
 	
 	public static final String TERRAIN_TEXTURES="/terrain/arp.png";
+	public static final int GUID_ALLOCATOR = 101;
 	
 	protected void initSide(){
 		
@@ -31,6 +36,10 @@ public class CommonProxy implements IGuiHandler{
 			int x, int y, int z) {
 		// implementd on client side
 		return null;
+	}
+
+	public void getCreativeSubtypes(Item item, List<ItemStack> list) {
+		// only on client
 	}
 	
 }

@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.objectweb.asm.tree.analysis.SourceInterpreter;
 
-import xfel.mods.arp.common.peripheral.bind.PeripheralMethod;
+import xfel.mods.arp.base.peripheral.bind.PeripheralMethod;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
 
@@ -130,5 +130,9 @@ public class InventoryPeripheral extends DatabasePeripheral {
 		}
 		
 		return moveAmount;
+	}
+
+	public void onInventoryChanged() {
+		queueSidedEvent("inventory");
 	}
 }

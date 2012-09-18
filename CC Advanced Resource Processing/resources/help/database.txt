@@ -1,0 +1,69 @@
+version @arp.version@
+Item database.
+
+Functions:
+
+db.getItem(name)
+Returns an item object representing the item with the given name. 
+	
+	
+The item object has the following methods and properties:
+
+item.name
+the name of the item. also returned by tostring(item).
+
+item:isBlock()
+returns true if the item is a block (It can be placed by a turtle).
+
+item:isTool()
+returns true if the item is a tool.
+
+item.maxStackSize
+How many items can be stored in one slot
+
+item.damageable
+true if the item can wear out.
+
+item.maxDamage
+Number of times the item can be used before it wears out.
+
+only if the item is a block:
+
+item.movable
+true if the block can by moved by a piston.
+
+item.burnable
+true if the block can burn.
+
+item.solid
+true if one can place torches on it's sides.
+
+item.lightlevel
+how much light does the block emit
+
+
+db.stack(item, [count, [damage]])
+returns an item stack object - it simply has these three properties.
+the damage value should only be used for tool-like damageable items. It is an integer from 0 to item.maxDamage, where 0 is fully intact and item.maxDamage is totally damaged.
+
+
+db.getRecipeResult(recipe,type)
+Returns the item you can craft with the given recipe on the given type. 
+to specify a recipe, you use a table as if it was the 3x3 crafting grid. empty slots are nil.
+recipe={	
+	item1,	item2,	item3,
+	item4,	item5,	item6,
+	item7,	item8,	item9	
+}
+If the recipe table contains a type field, it will be used instead of the parameter.
+The recipe type enables you to get recipes from mods. Normal crafting recipes have the "crafting" type, smelting recipes the "furnace" type.
+There are custom types, like "alloy", which is a RP alloy furnace recipe.
+It returns an item stack object.
+
+
+db.getRecipesFor(foritem, [type])
+Returns al recipes for the specified item in a table. Each recipe is a table as represented above. If no type is specified, recipes of all types are returned.
+
+
+db.getSmeltingResult(item)
+returns the furnace output for this item as item stack. This is deprecated, use db.getRecipeResult({item},"furnace") instead.

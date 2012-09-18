@@ -1,4 +1,4 @@
-package xfel.mods.arp.common.blocks;
+package xfel.mods.arp.base.blocks;
 
 import java.util.List;
 
@@ -9,15 +9,15 @@ import net.minecraft.src.CreativeTabs;
 import net.minecraft.src.ItemBlock;
 import net.minecraft.src.ItemStack;
 
-public class ItemMultipart extends ItemBlock {
+public class ItemBlockSubtypes extends ItemBlock {
 
-	private BlockMultipart.Subtype[] subtypes;
+	private BlockSubtypes.Subtype[] subtypes;
 
-	public ItemMultipart(int id) {
+	public ItemBlockSubtypes(int id) {
 		super(id);
 		setHasSubtypes(true);
 
-		subtypes = ((BlockMultipart) Block.blocksList[getBlockID()]).subtypes;
+		subtypes = ((BlockSubtypes) Block.blocksList[getBlockID()]).subtypes;
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class ItemMultipart extends ItemBlock {
 	public void getSubItems(int id, CreativeTabs tab,
 			List result) {
 		for (int metadata = 0; metadata < subtypes.length; metadata++) {
-			BlockMultipart.Subtype st = subtypes[metadata];
+			BlockSubtypes.Subtype st = subtypes[metadata];
 			if(st!=null){
 				result.add(new ItemStack(this, 1, metadata));
 			}

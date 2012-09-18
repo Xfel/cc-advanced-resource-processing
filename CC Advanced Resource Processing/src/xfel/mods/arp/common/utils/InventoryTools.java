@@ -9,6 +9,8 @@ package xfel.mods.arp.common.utils;
 
 import java.util.List;
 
+import buildcraft.api.inventory.ISpecialInventory;
+
 import net.minecraft.src.AxisAlignedBB;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.InventoryLargeChest;
@@ -29,6 +31,10 @@ public class InventoryTools {
 		coord.move(side, 1);
 		IInventory inv = getInventory(coord);
 
+		if (inv instanceof ISpecialInventory) {
+			ISpecialInventory spi = (ISpecialInventory) inv;
+			return spi;
+		}else
 		if (inv instanceof ISidedInventory) {
 			ISidedInventory sinv = (ISidedInventory) inv;
 

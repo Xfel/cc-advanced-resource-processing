@@ -9,22 +9,34 @@ package xfel.mods.arp.common;
 
 import java.util.logging.Logger;
 
-import xfel.mods.arp.common.CommonProxy;
+import net.minecraft.src.Block;
+import net.minecraft.src.Item;
+import net.minecraft.src.ItemStack;
+import xfel.mods.arp.base.blocks.ItemBlockSubtypes;
+import xfel.mods.arp.common.blocks.BlockAdvancedMachine;
+import xfel.mods.arp.common.blocks.BlockDigitalChest;
 import xfel.mods.arp.common.network.NetworkHandler;
+import xfel.mods.arp.common.tiles.TileDatabase;
+import xfel.mods.arp.common.tiles.TileDigitalAllocator;
+import xfel.mods.arp.common.tiles.TileDigitalChest;
+import xfel.mods.arp.common.tiles.TileInventoryInterface;
 import xfel.mods.arp.core.ResourceDatabase;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.ModMetadata;
-import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.Metadata;
 import cpw.mods.fml.common.Mod.PostInit;
 import cpw.mods.fml.common.Mod.PreInit;
+import cpw.mods.fml.common.ModMetadata;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 
 /**
  * Mod main class
@@ -54,6 +66,10 @@ public class AdvancedResourceProcessing {
 	@Metadata
 	public static ModMetadata metadata;
 
+	public static BlockAdvancedMachine blockAdvancedMachine;
+	public static BlockDigitalChest blockDigitalChest;
+
+	
 	@PreInit
 	public void loadConfig(FMLPreInitializationEvent evt) {
 		evt.getModMetadata().version = MOD_VERSION;
@@ -64,7 +80,59 @@ public class AdvancedResourceProcessing {
 
 	@Init
 	public void init(FMLInitializationEvent evt) {
+		GameRegistry.registerBlock(blockAdvancedMachine, ItemBlockSubtypes.class);
 
+		GameRegistry.registerBlock(blockDigitalChest, ItemBlockSubtypes.class);
+
+		ItemStack database = new ItemStack(blockAdvancedMachine, 1,
+				BlockAdvancedMachine.TYPE_DATABASE);
+		LanguageRegistry.addName(database, "Matter Database");
+		GameRegistry.addRecipe(database, new Object[] { "$W§", "S#S", "SRS",
+				'#', Block.bookShelf, '$', Block.glowStone, '§',
+				Item.enderPearl, 'W', Item.bucketWater, 'S', Block.stone, 'R',
+				Item.redstone });
+
+		ItemStack inventoryreader = new ItemStack(blockAdvancedMachine, 1,
+				BlockAdvancedMachine.TYPE_INVENTORY_INTERFACE);
+		LanguageRegistry.addName(inventoryreader, "Inventory Interface");
+		GameRegistry.addRecipe(inventoryreader, new Object[] { "LGL", "S#S",
+				"SRS", 'L', new ItemStack(Item.dyePowder, 1, 4), 'G',
+				Item.ingotGold, '#', database, 'S', Block.stone, 'R',
+				Item.redstone });
+
+		ItemStack digitalAllocator = new ItemStack(blockAdvancedMachine, 1,
+				BlockAdvancedMachine.TYPE_DIGITAL_ALLOCATOR);
+		LanguageRegistry.addName(digitalAllocator, "Digital Allocator");
+		GameRegistry.addRecipe(digitalAllocator, new Object[] { "IRI", "P#G",
+				"IRI", 'G', Item.ingotGold, '#', database, 'I', Item.ingotIron,
+				'P', Block.pistonBase, 'R', Item.redstone });
+
+		ItemStack digitalChest = new ItemStack(blockDigitalChest, 1, 0);
+		LanguageRegistry.addName(digitalChest, "Digital Chest");
+		GameRegistry.addRecipe(digitalChest, new Object[] { "SRS", "#CA",
+				"SRS", 'A', digitalAllocator, '#', inventoryreader, 'S',
+				Block.stone, 'R', Item.redstone, 'C', Block.chest });
+
+//		ItemStack digitalWorkbench = new ItemStack(blockAdvancedMachine, 1,
+//				BlockAdvancedMachine.TYPE_DIGITAL_WORKBENCH);
+//		LanguageRegistry.addName(digitalWorkbench, "Digital Workbench");
+//		GameRegistry.addRecipe(digitalWorkbench, new Object[] { "I#I", "RWR",
+//				"IPI", 'W', Block.workbench, '#', database, 'I',
+//				Item.ingotIron, 'P', Block.pistonBase, 'R', Item.redstone });
+
+		NetworkRegistry.instance().registerGuiHandler(this, sideHandler);
+
+		GameRegistry.registerTileEntity(TileDatabase.class, "MatterDatabase");
+		GameRegistry.registerTileEntity(TileInventoryInterface.class,
+				"InventoryReader");
+		GameRegistry.registerTileEntity(TileDigitalAllocator.class,
+				"DigitalAllocator");
+//		GameRegistry.registerTileEntity(TileDigitalWorkbench.class,
+//				"DigitalWorkbench");
+		GameRegistry.registerTileEntity(TileDigitalChest.class,
+				"DigitalChest");
+		
+		sideHandler.initSide();
 	}
 
 	@PostInit

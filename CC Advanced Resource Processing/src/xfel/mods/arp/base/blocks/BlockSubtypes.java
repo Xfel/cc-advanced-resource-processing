@@ -1,4 +1,4 @@
-package xfel.mods.arp.common.blocks;
+package xfel.mods.arp.base.blocks;
 
 import java.util.logging.Level;
 
@@ -8,7 +8,7 @@ import net.minecraft.src.Material;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 
-public abstract class BlockMultipart extends BlockExtended {
+public abstract class BlockSubtypes extends BlockExtended {
 
 	static class Subtype {
 		String name;
@@ -32,7 +32,7 @@ public abstract class BlockMultipart extends BlockExtended {
 
 	Subtype[] subtypes;
 
-	protected BlockMultipart(int id, Material material) {
+	protected BlockSubtypes(int id, Material material) {
 		super(id, material);
 		subtypes = new Subtype[16];
 	}

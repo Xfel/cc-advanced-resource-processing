@@ -1,0 +1,10 @@
+version @arp.version@
+ARP Turtle additional functions
+
+arpturtle.getInventory(side)
+this is basically the same as inventory.get("right",side), and only exists for a more convenient use. The side may be "self" or relative to the turtle to specify an adjacent inventory.
+
+arpturtle.detect()
+arpturtle.detectUp()
+arpturtle.detectDown()
+Returns an item object representing the block on the detection side. For more information about item objects see "help db"

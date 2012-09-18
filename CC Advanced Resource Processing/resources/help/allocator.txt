@@ -1,0 +1,32 @@
+version @arp.version@
+Digital Allocator
+
+Functions:
+
+allocator.getFilter(side)
+allocator.addFilter(side,...)
+allocator.removeFilter(side,...)
+allocator.clearFilter(side)
+Modifies the filter data. It will only take items in the filter. If no filter is set, all items are allowed.
+
+allocator.isActive(side)
+allocator.activate(side, active)
+Gets/sets a flag whether the allocator should operate. 
+
+allocator.getFilterMode(side)
+allocator.setFilterMode(side, mode)
+Gets/sets flags on how the allocator should operate. It is a list of chars. Currently supported flags are:
+ "e": Exclude mode. The allocator will only pass through items which are not in the filter.
+ "r": Reverse mode. The allocator's input side becomes the output side and vice-versa.
+ 
+allocator.getSpecialSlots(side)
+allocator.setSpecialSlots(side, source, target)
+Gets/sets the slots on which the allocator should work. Default side limitations are ignored. This allows you to eg. run a whole furnace with one allocator or set up a railcraft rolling machine with a crafting recipe.
+To disable slot filtering on the input or target side, simply use nil.
+
+allocator.transmit(side, count, [item])
+Transfer <count> items through the allocator and return when done.
+
+
+Events:
+"allocated" when the allocator successfully transports an item. params: side, item_name, item_count
