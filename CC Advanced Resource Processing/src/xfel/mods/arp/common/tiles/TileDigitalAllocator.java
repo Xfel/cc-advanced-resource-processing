@@ -108,7 +108,7 @@ public class TileDigitalAllocator extends TileOrientable implements
 	}
 
 	// access control
-	private boolean open;
+	private boolean open = true;
 
 	private boolean active;
 
@@ -173,13 +173,20 @@ public class TileDigitalAllocator extends TileOrientable implements
 	}
 
 	public boolean isAcceptedItem(ItemStack item) {
+		boolean filterEmpty = true;
 		for (int i = 0; i < FILTER_SIZE; i++) {
 			ItemStack filterElem = invobj.getStackInSlot(BUFFER_SIZE + i);
 
-			if (filterElem != null && filterElem.isItemEqual(item)) {
-				return !filterExcludeMode;
+			if (filterElem != null) {
+				if (filterElem.isItemEqual(item)) {
+					return !filterExcludeMode;
+				}
+				filterEmpty = false;
 			}
 		}
+		if (filterEmpty)
+			return true;
+
 		return filterExcludeMode;
 	}
 
@@ -211,53 +218,99 @@ public class TileDigitalAllocator extends TileOrientable implements
 
 	// buffer control
 	private int bufferStart;
-	private int bufferPos;
+
+	// private int bufferPos;
 
 	public int getBufferStart() {
-		return bufferStart;
+		return bufferStart % BUFFER_SIZE;
 	}
 
-	public int getBufferPos() {
-		return bufferPos;
-	}
+	// public int getBufferPos() {
+	// return bufferPos % BUFFER_SIZE;
+	// }
 
-	public boolean isBufferFull() {
-		int np = bufferPos + 1 % BUFFER_SIZE;
-		return np == bufferStart;
-	}
-
+	// public boolean isBufferFull() {
+	// int np = bufferPos + 1 % BUFFER_SIZE;
+	// return np == bufferStart;
+	// }
+	//
+	// public boolean isBufferEmpty() {
+	// return bufferPos == bufferStart;
+	// }
 	public boolean isBufferEmpty() {
-		return bufferPos == bufferStart;
+		for (int i = 0; i < BUFFER_SIZE; i++) {
+			if (invobj.getStackInSlot(i) != null) {
+				return true;
+			}
+		}
+		return false;
 	}
 
-	protected boolean requeue(ItemStack item) {
-		int np = bufferStart - 1 % BUFFER_SIZE;
-		if (np == bufferPos)
-			return false;
-		invobj.setInventorySlotContents(np, item);
-		bufferStart = np;
-		requestNetworkUpdate();
-		return true;
+	// protected boolean requeue(ItemStack item) {
+	// int np = bufferStart - 1 % BUFFER_SIZE;
+	// if (np == bufferPos)
+	// return false;
+	// invobj.setInventorySlotContents(np, item);
+	// bufferStart = np;
+	// requestNetworkUpdate();
+	// return true;
+	// }
+
+	protected int offer(ItemStack item, boolean doAdd) {
+		int remaining = item.stackSize;
+		for (int i = 0; i < BUFFER_SIZE && remaining > 0; i++) {
+			int slotIndex = (i + bufferStart) % BUFFER_SIZE;
+
+			ItemStack slotContents = invobj.getStackInSlot(slotIndex);
+			if (slotContents == null) {
+				if (doAdd)
+					invobj.setInventorySlotContents(slotIndex, item);
+				remaining = 0;
+				break;
+			} else if (item.isStackable() && slotContents.isItemEqual(item)) {
+				int amount = Math.min(remaining, slotContents.getMaxStackSize()
+						- slotContents.stackSize);
+				if (doAdd)
+					slotContents.stackSize += amount;
+				remaining -= amount;
+			}
+		}
+		if (doAdd) {
+			onInventoryChanged();
+			requestNetworkUpdate();
+		}
+		return item.stackSize - remaining;
+		// int np = bufferPos + 1 % BUFFER_SIZE;
+		// if (np == bufferStart)
+		// return false;
+		// invobj.setInventorySlotContents(np, item);
+		// bufferPos = np;
+		// requestNetworkUpdate();
+		// return true;
 	}
 
-	protected boolean offer(ItemStack item) {
-		int np = bufferPos + 1 % BUFFER_SIZE;
-		if (np == bufferStart)
-			return false;
-		invobj.setInventorySlotContents(np, item);
-		bufferPos = np;
+	protected int peekIndex() {
+		int bufferStart = this.bufferStart;
+
+		ItemStack result;
+		do {
+			result = invobj.getStackInSlot(bufferStart);
+			bufferStart++;
+			bufferStart %= BUFFER_SIZE;
+		} while (result == null && this.bufferStart != bufferStart);
+
 		requestNetworkUpdate();
-		return true;
+		return result == null ? -1 : bufferStart - 1;
 	}
 
 	protected ItemStack poll() {
-		if (bufferPos == bufferStart)
-			return null;
+		int bufferPos = bufferStart;
 
 		ItemStack result;
 		do {
 			result = invobj.getStackInSlotOnClosing(bufferStart);
 			bufferStart++;
+			bufferStart %= BUFFER_SIZE;
 		} while (result == null && bufferPos != bufferStart);
 
 		requestNetworkUpdate();
@@ -279,7 +332,7 @@ public class TileDigitalAllocator extends TileOrientable implements
 		speed = in.readUnsignedShort();
 		progress = in.readUnsignedShort();
 
-		bufferPos = in.readUnsignedByte();
+		// bufferPos = in.readUnsignedByte();
 		bufferStart = in.readUnsignedByte();
 	}
 
@@ -305,7 +358,7 @@ public class TileDigitalAllocator extends TileOrientable implements
 		out.writeShort(speed);
 		out.writeShort(progress);
 
-		out.writeByte(bufferPos);
+		// out.writeByte(bufferPos);
 		out.writeByte(bufferStart);
 	}
 
@@ -322,7 +375,7 @@ public class TileDigitalAllocator extends TileOrientable implements
 		speed = nbt.getShort("Speed") & 0xffff;
 		progress = nbt.getShort("Progress") & 0xffff;
 
-		bufferPos = nbt.getByte("BufferPos") & 0xff;
+		// bufferPos = nbt.getByte("BufferPos") & 0xff;
 		bufferStart = nbt.getByte("BufferStart") & 0xff;
 
 		for (int slot = 0; slot < invobj.getSizeInventory(); ++slot) {
@@ -365,7 +418,7 @@ public class TileDigitalAllocator extends TileOrientable implements
 		nbt.setShort("Speed", (short) speed);
 		nbt.setShort("Progress", (short) progress);
 
-		nbt.setByte("BufferPos", (byte) bufferPos);
+		// nbt.setByte("BufferPos", (byte) bufferPos);
 		nbt.setByte("BufferStart", (byte) bufferStart);
 
 		NBTTagList itemList = new NBTTagList();
@@ -440,65 +493,97 @@ public class TileDigitalAllocator extends TileOrientable implements
 	// core logic
 	@Override
 	public void onEntityCollided(Entity entity) {
-		if (entity instanceof EntityItem && !isBufferFull() && isOpen()) {
+		if (entity instanceof EntityItem && isOpen()) {
 			EntityItem item = (EntityItem) entity;
 
 			if (!isAcceptedItem(item.item)) {
 				return;
 			}
 
-			offer(item.item);
-			item.setDead();
+			if (offer(item.item, true) == item.item.stackSize)
+				item.setDead();
 		}
 	}
 
 	@Override
 	public void updateEntity() {
-		if (!isBufferEmpty()) {
-			ItemStack stack = poll();
+		if (worldObj.isRemote)
+			return;
+
+		int peekIdx = peekIndex();
+		if (peekIdx != -1) {
+			ItemStack stack = invobj.getStackInSlot(peekIdx);
 
 			WorldCoordinate wc = new WorldCoordinate(this);
 
-			TileEntity destTile = wc.move(getOutputSide(), 1)
-					.getBlockTileEntity();
+			WorldCoordinate move = wc.move(getOutputSide(), 1);
+			TileEntity destTile = move.getBlockTileEntity();
 			if (destTile instanceof IPipeEntry
 					&& ((IPipeEntry) destTile).acceptItems()) {
-				((IPipeEntry) destTile).entityEntering(stack, Orientations
-						.values()[getOutputSide().getOpposite().ordinal()]);
+				((IPipeEntry) destTile).entityEntering(stack.copy(),
+						Orientations.values()[getOutputSide().ordinal()]);
+				stack.stackSize = 0;
 			} else {
 				IInventory inv = InventoryTools.getInventoryAtSide(wc,
 						getOutputSide());
 				if (inv instanceof ISpecialInventory) {
 					ISpecialInventory isi = (ISpecialInventory) inv;
-					stack.stackSize = isi.addItem(stack, true, Orientations
+					stack.stackSize -= isi.addItem(stack, true, Orientations
 							.values()[getOutputSide().getOpposite().ordinal()]);
-				} else {
-					InventoryTools.putItemStack(inv, stack, false);
+				} else if (inv != null) {
+					stack.stackSize -= InventoryTools.putItemStack(inv, stack,
+							false);
+				} else if (move.isEmpty()) {
+					float f = worldObj.rand.nextFloat() * 0.8F + 0.1F;
+					float f1 = worldObj.rand.nextFloat() * 0.8F + 0.1F;
+					float f2 = worldObj.rand.nextFloat() * 0.8F + 0.1F;
+
+					EntityItem entityitem = new EntityItem(worldObj, xCoord + f
+							+ getOutputSide().offsetX * 0.5f, yCoord + f1
+							+ getOutputSide().offsetY * 0.5f, zCoord + f2
+							+ getOutputSide().offsetZ * 0.5f, stack.copy());
+
+					float f3 = 0.05F;
+					entityitem.motionX = (float) worldObj.rand.nextGaussian()
+							* f3+ getOutputSide().offsetX;
+					entityitem.motionY = (float) worldObj.rand.nextGaussian()
+							* f3 + getOutputSide().offsetY;
+					entityitem.motionZ = (float) worldObj.rand.nextGaussian()
+							* f3+ getOutputSide().offsetZ;
+					entityitem.delayBeforeCanPickup=20;
+					worldObj.spawnEntityInWorld(entityitem);
+					stack.stackSize = 0;
 				}
 			}
+			if (stack.stackSize == 0) {
+				invobj.setInventorySlotContents(peekIdx, null);
+				bufferStart = (peekIdx + 1) % BUFFER_SIZE;
+			} else {
+				bufferStart = peekIdx;
+			}
+			onInventoryChanged();
+			requestNetworkUpdate();
 		}
 	}
 
 	// inventory implementation
 
 	public ItemStack getStackInSlot(int slot) {
-		return invobj.getStackInSlot((slot + bufferPos) % BUFFER_SIZE
-				+ FILTER_SIZE);
+		return invobj.getStackInSlot((slot + bufferStart) % BUFFER_SIZE);
 	}
 
 	public ItemStack decrStackSize(int slot, int amount) {
-		return invobj.decrStackSize((slot + bufferPos) % BUFFER_SIZE
-				+ FILTER_SIZE, amount);
+		return invobj.decrStackSize((slot + bufferStart) % BUFFER_SIZE, amount);
 	}
 
 	public ItemStack getStackInSlotOnClosing(int slot) {
-		return invobj.getStackInSlotOnClosing((slot + bufferPos) % BUFFER_SIZE
-				+ FILTER_SIZE);
+		return invobj.getStackInSlotOnClosing((slot + bufferStart)
+				% BUFFER_SIZE);
 	}
 
 	public void setInventorySlotContents(int slot, ItemStack stack) {
-		invobj.setInventorySlotContents((slot + bufferPos) % BUFFER_SIZE
-				+ FILTER_SIZE, stack);
+		invobj.setInventorySlotContents((slot + bufferStart) % BUFFER_SIZE,
+				stack);
 	}
 
 	public int getSizeInventory() {
@@ -534,21 +619,17 @@ public class TileDigitalAllocator extends TileOrientable implements
 	@Override
 	public boolean isPipeConnected(Orientations with) {
 		ForgeDirection dir = with.toDirection();
-		System.out.println(dir+"/"+getOrientation());
 		return dir == getInputSide() || dir == getOutputSide();
 	}
 
 	@Override
 	public int addItem(ItemStack stack, boolean doAdd, Orientations from) {
-		if (isBufferFull() || !isOpen() || from.toDirection() != getInputSide()
+		if (!isOpen() || from.toDirection() != getInputSide()
 				|| !isAcceptedItem(stack))
 			return 0;
 
-		if (doAdd) {
-			offer(stack.copy());
-		}
-
-		return stack.stackSize;
+		int amount = offer(stack, doAdd);
+		return amount;
 	}
 
 	@Override

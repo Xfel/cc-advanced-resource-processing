@@ -81,9 +81,9 @@ public class GuiDigitalAllocator extends GuiContainer {
 
 		this.drawTexturedModalRect(x + 5 + tile.getBufferStart() * 18, y + 63,
 				176, 0, 22, 22);
-		if (!tile.isBufferEmpty())
-			this.drawTexturedModalRect(x + 5 + tile.getBufferPos() * 18,
-					y + 63, 176, 22, 22, 22);
+//		if (!tile.isBufferEmpty())
+//			this.drawTexturedModalRect(x + 5 + tile.getBufferPos() * 18,
+//					y + 63, 176, 22, 22, 22);
 	}
 
 }

@@ -28,8 +28,7 @@ public class InventoryTools {
 
 	public static IInventory getInventoryAtSide(WorldCoordinate coord,
 			ForgeDirection side) {
-		coord.move(side, 1);
-		IInventory inv = getInventory(coord);
+		IInventory inv = getInventory(coord.move(side, 1));
 
 		if (inv instanceof ISpecialInventory) {
 			ISpecialInventory spi = (ISpecialInventory) inv;
@@ -79,13 +78,13 @@ public class InventoryTools {
 		return null;
 	}
 
-	public static boolean putItemStack(IInventory target, ItemStack stack,
+	public static int putItemStack(IInventory target, ItemStack stack,
 			boolean inverse) {
-		boolean success = false;
+		int remaining=stack.stackSize;
 		if (stack.isStackable()) {
 			int slot = inverse ? target.getSizeInventory() - 1 : 0;
 
-			while (stack.stackSize > 0
+			while (remaining > 0
 					&& (!inverse && slot < target.getSizeInventory() || inverse
 							&& slot >= 0)) {
 				ItemStack invStack = target.getStackInSlot(slot);
@@ -95,19 +94,17 @@ public class InventoryTools {
 						&& (!stack.getHasSubtypes() || stack.getItemDamage() == invStack
 								.getItemDamage())
 						&& ItemStack.func_77970_a(stack, invStack)) {
-					int newStackSize = invStack.stackSize + stack.stackSize;
+					int newStackSize = invStack.stackSize + remaining;
 
 					if (newStackSize <= stack.getMaxStackSize()) {
-						stack.stackSize = 0;
+						remaining = 0;
 						invStack.stackSize = newStackSize;
 						target.onInventoryChanged();
-						success = true;
 					} else if (invStack.stackSize < stack.getMaxStackSize()) {
-						stack.stackSize -= stack.getMaxStackSize()
+						remaining -= stack.getMaxStackSize()
 								- invStack.stackSize;
 						invStack.stackSize = stack.getMaxStackSize();
 						target.onInventoryChanged();
-						success = true;
 					}
 				}
 
@@ -119,7 +116,7 @@ public class InventoryTools {
 			}
 		}
 
-		if (stack.stackSize > 0) {
+		if (remaining > 0) {
 			int slot = inverse ? target.getSizeInventory() - 1 : 0;
 
 			while (!inverse && slot < target.getSizeInventory() || inverse
@@ -128,8 +125,7 @@ public class InventoryTools {
 
 				if (invStack == null) {
 					target.setInventorySlotContents(slot, stack.copy());
-					stack.stackSize = 0;
-					success = true;
+					remaining = 0;
 					break;
 				}
 
@@ -141,7 +137,7 @@ public class InventoryTools {
 			}
 		}
 
-		return success;
+		return stack.stackSize-remaining;
 	}
 
 	public static void loadInventory(IInventory inv, NBTTagList nbt) {

@@ -21,7 +21,7 @@ public class ContainerDigitalAllocator extends Container {
 
 		for (int y = 0; y < 2; ++y) {
 			for (int x = 0; x < 3; ++x) {
-				this.addSlotToContainer(new SlotTaggable(inv, 9 + x + y * 3,
+				this.addSlotToContainer(new SlotTaggable(inv,TileDigitalAllocator.BUFFER_SIZE + x + y * 3,
 						8 + x * 18, 17 + y * 18));
 			}
 		}
@@ -87,13 +87,5 @@ public class ContainerDigitalAllocator extends Container {
 
 		return stack;
 	}
-
-	// @Override
-	// public ItemStack transferStackInSlot(int slot) {
-	// if(getSlot(slot)instanceof SlotTaggable)
-	// return null;
-	//
-	// return super.transferStackInSlot(slot);
-	// }
 
 }

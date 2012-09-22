@@ -90,4 +90,8 @@ public class WorldCoordinate {
 				x + 1, y + 1, z + 1);
 	}
 
+	public boolean isEmpty() {
+		return world.isAirBlock(x, y, z);
+	}
+
 }
