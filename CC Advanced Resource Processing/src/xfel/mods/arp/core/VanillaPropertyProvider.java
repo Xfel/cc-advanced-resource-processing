@@ -36,17 +36,17 @@ import xfel.mods.arp.api.ItemKey;
 public class VanillaPropertyProvider implements IItemPropertyProvider,
 		IItemStackPropertyProvider {
 
-	private Map<ItemKey, Integer> oreIds=new HashMap<ItemKey, Integer>();
-	
+	private Map<ItemKey, Integer> oreIds = new HashMap<ItemKey, Integer>();
+
 	public VanillaPropertyProvider() {
 		MinecraftForge.EVENT_BUS.register(this);
 	}
-	
+
 	@ForgeSubscribe
-	public void addOre(OreDictionary.OreRegisterEvent evt){
+	public void addOre(OreDictionary.OreRegisterEvent evt) {
 		oreIds.put(new ItemKey(evt.Ore), OreDictionary.getOreID(evt.Name));
 	}
-	
+
 	@Override
 	public void getProperties(ItemStack stack, Map<String, Object> result) {
 		Item item = stack.getItem();
@@ -72,8 +72,8 @@ public class VanillaPropertyProvider implements IItemPropertyProvider,
 				Enchantment ench = Enchantment.enchantmentsList[id];
 
 				if (ench != null) {
-					lst.put(StatCollector.translateToLocal(ench.getName()).toLowerCase(),
-							level);
+					lst.put(StatCollector.translateToLocal(ench.getName())
+							.toLowerCase(), level);
 				}
 			}
 
@@ -91,12 +91,12 @@ public class VanillaPropertyProvider implements IItemPropertyProvider,
 		result.put("damagable", item.isDamageable());
 		result.put("repairable", item.isRepairable());
 		result.put("maxDamage", item.getMaxDamage());
-		result.put(
-				"containerItem",
-				ResourceDatabase.instance().getItemName(
-						new ItemKey(item.getContainerItemStack(key
-								.toItemStack(1)))));
-
+		ItemStack containerItemStack = item.getContainerItemStack(key
+				.toItemStack(1));
+		if (containerItemStack != null) {
+			result.put("containerItem", ResourceDatabase.instance()
+					.getItemName(new ItemKey(containerItemStack)));
+		}
 		if (key.isBlock()) {
 			result.put("block", Boolean.TRUE);
 
@@ -118,18 +118,18 @@ public class VanillaPropertyProvider implements IItemPropertyProvider,
 
 			result.put("healAmount", ifood.getHealAmount());
 		}
-		
-		if(oreIds.containsKey(key)){
-			Integer oreId=oreIds.get(key);
-			
+
+		if (oreIds.containsKey(key)) {
+			Integer oreId = oreIds.get(key);
+
 			result.put("ore", OreDictionary.getOreName(oreId));
-			
+
 			List<ItemStack> enchlist = OreDictionary.getOres(oreId);
 			Map lst = new HashMap(enchlist.size());
 
 			for (int i = 0; i < enchlist.size(); i++) {
-				lst.put(Integer.valueOf(i),
-							ResourceDatabase.instance().getItemName(new ItemKey(enchlist.get(i))));
+				lst.put(Integer.valueOf(i), ResourceDatabase.instance()
+						.getItemName(new ItemKey(enchlist.get(i))));
 			}
 
 			result.put("otherOres", lst);

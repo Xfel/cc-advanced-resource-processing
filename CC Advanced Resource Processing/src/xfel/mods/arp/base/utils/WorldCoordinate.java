@@ -8,6 +8,7 @@
 package xfel.mods.arp.base.utils;
 
 import net.minecraft.src.AxisAlignedBB;
+import net.minecraft.src.Block;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.Vec3;
 import net.minecraft.src.World;
@@ -60,6 +61,13 @@ public class WorldCoordinate {
 		return z;
 	}
 
+	public WorldCoordinate moveLocal(ForgeDirection dir, int dist) {
+		x += dist * dir.offsetX;
+		y += dist * dir.offsetY;
+		z += dist * dir.offsetZ;
+		return this;
+	}
+
 	public WorldCoordinate move(ForgeDirection dir, int dist) {
 		return new WorldCoordinate(world, x + dist * dir.offsetX, y + dist
 				* dir.offsetY, z + dist * dir.offsetZ);
@@ -67,6 +75,10 @@ public class WorldCoordinate {
 
 	public int getBlockId() {
 		return world.getBlockId(x, y, z);
+	}
+	
+	public Block getBlock() {
+		return Block.blocksList[world.getBlockId(x, y, z)];
 	}
 
 	public int getBlockMetadata() {
