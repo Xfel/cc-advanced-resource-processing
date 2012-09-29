@@ -20,6 +20,7 @@ import xfel.mods.arp.common.tiles.TileDatabase;
 import xfel.mods.arp.common.tiles.TileDigitalAllocator;
 import xfel.mods.arp.common.tiles.TileDigitalChest;
 import xfel.mods.arp.common.tiles.TileInventoryInterface;
+import xfel.mods.arp.common.turtle.TurtleARP;
 import xfel.mods.arp.core.ResourceDatabase;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
@@ -37,6 +38,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import dan200.turtle.api.TurtleAPI;
 
 /**
  * Mod main class
@@ -139,6 +141,6 @@ public class AdvancedResourceProcessing {
 
 	@PostInit
 	public void setupCompability(FMLPostInitializationEvent evt) {
-
+		TurtleAPI.registerUpgrade(new TurtleARP());
 	}
 }
