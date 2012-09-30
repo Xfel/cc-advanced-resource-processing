@@ -1,4 +1,3 @@
--- version @arp.version@
 
 function isPresent(_side)
 	return peripheral.getType(_side) == "allocator"

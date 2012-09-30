@@ -1,4 +1,3 @@
--- version @arp.version@
 
 -- dirty fix to allow true lua-style api files
 local db = getfenv()
@@ -12,7 +11,7 @@ local function callNative(name, ...)
 
 	local side
 	for _, v in ipairs(sides) do
-		if peripheral.getType(v) == "database" or peripheral.getType(v) == "inventory" or peripheral.getType(v) == "workbench" or peripheral.getType(v) == "allocator" then
+		if peripheral.getType(v) == "database" or peripheral.getType(v) == "inventory" or peripheral.getType(v) == "allocator" then
 			side = v
 			break
 		end
@@ -65,9 +64,6 @@ local stack_mt = {
 }
 
 local item_mt = {
-	-- functions
-	isTool = isTool,
-	isBlock = isBlock,
 	-- metafunctions
 	__eq = function(a,b)
 		return string.lower(a.name) == string.lower(b.name)
@@ -80,25 +76,19 @@ local item_mt = {
 	end,
 	__metatable = "item"
 }
--- seperate indexer
+--[[ seperate indexer
 item_mt.__index = function(t, prop)
-	-- check for global functions etc.
-	local result = item_mt[prop]
-	if result then
-		return result
-	end
-
-	-- check for cached values
-	--[[result = rawget(t, prop)
-	if result then
-		return result
-	end]]
-
-	-- load property data
-	result = callNative("getProperty", t.name, prop)
-	rawset(t, prop, result)
-	return result
+-- check for global functions etc.
+local result = item_mt[prop]
+if result then
+return result
 end
+
+-- load property data
+result = callNative("getProperty", t.name, prop)
+rawset(t, prop, result)
+return result
+end]]
 
 function db.stack(item,count,dmg)
 	if type(item) == "string" then
@@ -114,19 +104,23 @@ function db.stack(item,count,dmg)
 	return setmetatable(st, stack_mt)
 end
 
+function db.setStackMT(stack)
+	return setmetatable(stack, stack_mt)
+end
+
 function db.getItem(_name)
 	local item = itemCache[_name]
 	if item then
 		return item
 	end
 
+	item = callNative("getItem", _name)
+
 	if not callNative("checkItem", _name) then
 		return nil
 	end
 
-	item = { name = _name }
-
-	itemCache[_name] = item
+	itemCache[item.name] = item
 
 	return setmetatable(item, item_mt)
 end
@@ -207,11 +201,11 @@ function db.getSmeltingSource(output)
 	end
 
 	local table = unserialize(result)
-	
+
 	if not table or not table[1] then
 		return nil
 	end
-	
+
 	return table[1][1]
 	--[[
 	local item, count, dmg = callNative("getSmeltingSource", output.name)

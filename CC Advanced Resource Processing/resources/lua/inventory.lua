@@ -1,4 +1,3 @@
--- version @arp.version@
 
 local function listIterSkip(_inv, _idx)
 	local nextobj
@@ -99,7 +98,7 @@ function swap(_inv1, _slot1, _inv2, _slot2)
 		assert(_inv1.side == _inv2.side, "Can't modify inventories from different peripherals")
 	end
 
-	return peripheral.call(_inv1.side, "swapStacks", _slot1, _inv1.key, _slot2, _inv2.key)
+	return peripheral.call(_inv1.side, "swapStacks", _inv1.key, _slot1, _inv2.key, _slot2)
 end
 
 function move(amount, _inv1, _slot1, _inv2, _slot2)
@@ -112,7 +111,7 @@ function move(amount, _inv1, _slot1, _inv2, _slot2)
 		assert(_inv1.side == _inv2.side, "Can't modify inventories from different peripherals")
 	end
 
-	return peripheral.call(_inv1.side, "splitStack", _slot1, _inv1.key, _slot2, _inv2.key, amount)
+	return peripheral.call(_inv1.side, "splitStack", _inv1.key, _slot1, _inv2.key, _slot2, amount)
 end
 
 function isPresent(_side, _key)
@@ -157,9 +156,8 @@ local inv_mt = {
 inv_mt.__index = function(t, i)
 	assert(inventory.isPresent(t.side), "Invalid Inventory")
 	if type(i) == "number" then
-		local item, count, dmg = peripheral.call(t.side, "getInventoryContent", i, t.key)
-		local stack = db.stack(item, count, dmg)
-
+		local stack = db.setStackMT(peripheral.call(t.side, "getInventorySlot", t.key, i))
+		
 		if stack then
 			stack.inventory = t;
 			stack.slot = i

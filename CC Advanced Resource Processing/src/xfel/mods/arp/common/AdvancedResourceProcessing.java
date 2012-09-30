@@ -12,7 +12,9 @@ import java.util.logging.Logger;
 import net.minecraft.src.Block;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
+import net.minecraftforge.common.Configuration;
 import xfel.mods.arp.base.blocks.ItemBlockSubtypes;
+import xfel.mods.arp.base.peripheral.RomInjector;
 import xfel.mods.arp.common.blocks.BlockAdvancedMachine;
 import xfel.mods.arp.common.blocks.BlockDigitalChest;
 import xfel.mods.arp.common.network.NetworkHandler;
@@ -74,19 +76,27 @@ public class AdvancedResourceProcessing {
 	
 	@PreInit
 	public void loadConfig(FMLPreInitializationEvent evt) {
+		RomInjector.setMinecraftHome(evt.getModConfigurationDirectory().getParentFile());
 		evt.getModMetadata().version = MOD_VERSION;
 		
 		// create the database
 		ResourceDatabase.instance();
+
+		Configuration config = new Configuration(evt.getSuggestedConfigurationFile());
+		
+		config.load();
+		
+		blockAdvancedMachine=new BlockAdvancedMachine(config.getOrCreateBlockIdProperty("advancedmachine", 2040).getInt());
+		GameRegistry.registerBlock(blockAdvancedMachine, ItemBlockSubtypes.class);
+
+		blockDigitalChest=new BlockDigitalChest(config.getOrCreateBlockIdProperty("digitalchest", 2041).getInt());
+		GameRegistry.registerBlock(blockDigitalChest);
+		
+		config.save();
 	}
 
 	@Init
 	public void init(FMLInitializationEvent evt) {
-		blockAdvancedMachine=new BlockAdvancedMachine(2040);
-		GameRegistry.registerBlock(blockAdvancedMachine, ItemBlockSubtypes.class);
-
-		blockDigitalChest=new BlockDigitalChest(2041);
-		GameRegistry.registerBlock(blockDigitalChest);
 
 		ItemStack database = new ItemStack(blockAdvancedMachine, 1,
 				BlockAdvancedMachine.TYPE_DATABASE);
@@ -142,5 +152,12 @@ public class AdvancedResourceProcessing {
 	@PostInit
 	public void setupCompability(FMLPostInitializationEvent evt) {
 		TurtleAPI.registerUpgrade(new TurtleARP());
+		
+		RomInjector.injectClasspathFile("apis/db", "lua/database.lua", MOD_VERSION);
+		RomInjector.injectClasspathFile("help/db", "help/database.txt", MOD_VERSION);
+		
+		RomInjector.injectClasspathFile("apis/inventory", "lua/inventory.lua", MOD_VERSION);
+		RomInjector.injectClasspathFile("help/inventory", "help/inventory.txt", MOD_VERSION);
+		RomInjector.injectClasspathFile("programs/inventory-dump", "lua/dumpinv.lua", MOD_VERSION);
 	}
 }
