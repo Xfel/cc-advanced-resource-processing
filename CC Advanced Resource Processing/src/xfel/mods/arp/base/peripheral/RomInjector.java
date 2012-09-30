@@ -16,8 +16,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.FMLLog;
 
 /**
  * This class helps you writing your peripheral api and help files into
@@ -34,7 +37,14 @@ import cpw.mods.fml.common.FMLCommonHandler;
  */
 public class RomInjector {
 
-	private static final String VERSION_MARKER = "version ";
+	private static final Logger logger;
+
+	static {
+		logger = Logger.getLogger("CC-RomInjector");
+		logger.setParent(FMLLog.getLogger());
+	}
+	
+	private static final String VERSION_MARKER = "-- v";
 
 	private static final String COMPUTERCRAFT_ROM_DIRECTORY = "mods/ComputerCraft/lua/rom";
 
@@ -52,9 +62,9 @@ public class RomInjector {
 	/**
 	 * Takes a source file from the classpath.
 	 * 
-	 * @see #injectFile(String, InputStream)
+	 * @see #injectFile(String, InputStream, String)
 	 */
-	public static void injectClasspathFile(String targetName, String sourceName) {
+	public static void injectClasspathFile(String targetName, String sourceName, String version) {
 		InputStream source = RomInjector.class.getClassLoader()
 				.getResourceAsStream(sourceName);
 
@@ -64,15 +74,14 @@ public class RomInjector {
 		}
 
 		try {
-			injectFile(targetName, source);
+			injectFile(targetName, source, version);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Error injecting file", e);
 		} finally {
 			try {
 				source.close();
 			} catch (IOException e) {
-				System.err.println("Error closing stream:");
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "Error closing stream", e);
 			}
 		}
 	}
@@ -85,51 +94,53 @@ public class RomInjector {
 	 *            a path relative to the rom directory
 	 * @param source
 	 *            an input stream containing the source file
+	 * @param version the version to use for the new file. normally the mod version.
 	 * @throws IOException
 	 */
-	public static void injectFile(String targetName, InputStream source)
+	public static void injectFile(String targetName, InputStream source, String version)
 			throws IOException {
 		File targetFile = new File(romDirectory, targetName);
 
-		BufferedInputStream bufferedSource;
-		if (source instanceof BufferedInputStream) {
-			bufferedSource = (BufferedInputStream) source;
-		} else {
-			bufferedSource = new BufferedInputStream(source);
-		}
+//		BufferedInputStream bufferedSource;
+//		if (source instanceof BufferedInputStream) {
+//			bufferedSource = (BufferedInputStream) source;
+//		} else {
+//			bufferedSource = new BufferedInputStream(source);
+//		}
 
 		if (targetFile.exists()) {
 			FileInputStream fis = new FileInputStream(targetFile);
 			try {
-				bufferedSource.mark(256);
-				if (versionCheck(fis, bufferedSource)) {
+//				bufferedSource.mark(256);
+				if (versionCheck(fis, version)) {
 					return;
 				}
-				bufferedSource.reset();
+//				bufferedSource.reset();
 			} finally {
 				try {
 					fis.close();
 				} catch (IOException e) {
-					System.err.println("Error closing stream:");
-					e.printStackTrace();
+					logger.log(Level.SEVERE, "Error closing stream", e);
 				}
 			}
 		} else if (!targetFile.getParentFile().exists()&&!targetFile.getParentFile().mkdirs()) {
-			System.err.println("Could not create file: " + targetFile);
+			logger.log(Level.WARNING, "Could not create file:  {0}", targetFile);
 			return;
 		}
 		
-		System.out.println("Injecting api file: "+targetName);
+		logger.log(Level.INFO, "Injecting api file: {0}",targetName);
 		
 		FileOutputStream fos = new FileOutputStream(targetFile);
 		try {
-			copy(bufferedSource, fos);
+			fos.write(VERSION_MARKER.getBytes());
+			fos.write(version.getBytes());
+			fos.write("\r\n".getBytes());
+			copy(source, fos);
 		} finally {
 			try {
 				fos.close();
 			} catch (IOException e) {
-				System.err.println("Error closing stream:");
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "Error closing stream", e);
 			}
 		}
 	}
@@ -146,10 +157,10 @@ public class RomInjector {
 	}
 
 	private static boolean versionCheck(InputStream targetFile,
-			InputStream sourceFile) throws IOException {
-		String sourceVerString = readVersionString(sourceFile);
+			String sourceVersion) throws IOException {
+//		String sourceVerString = readVersionString(sourceFile);
 		String targetVerString = readVersionString(targetFile);
-		return targetVerString.compareToIgnoreCase(sourceVerString) <= 0;
+		return targetVerString.compareToIgnoreCase(sourceVersion) <= 0;
 	}
 
 	private static String readVersionString(InputStream in) throws IOException {
