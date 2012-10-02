@@ -49,7 +49,7 @@ public class GuiDigitalAllocator extends GuiContainer {
 			break;
 		}
 		
-		PacketDispatcher.sendPacketToServer(tile.getAuxillaryInfoPacket());
+		PacketDispatcher.sendPacketToServer(tile.getDescriptionPacket());
 	}
 
 	/**

@@ -194,7 +194,7 @@ public class TileOrientable extends TileExtended implements INetworkedTile {
 	}
 	
 	@Override
-	public Packet getAuxillaryInfoPacket() {
+	public Packet getDescriptionPacket() {
 		return NetworkHandler.getUpdatePacket(this);
 	}
 

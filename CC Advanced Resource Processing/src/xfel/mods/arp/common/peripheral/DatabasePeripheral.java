@@ -1,11 +1,13 @@
 package xfel.mods.arp.common.peripheral;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 import dan200.computer.api.IPeripheral;
 
 import xfel.mods.arp.api.ItemKey;
+import xfel.mods.arp.api.RecipeType;
 import xfel.mods.arp.base.peripheral.bind.AbstractAnnotatedPeripheral;
 import xfel.mods.arp.base.peripheral.bind.PeripheralMethod;
 import xfel.mods.arp.core.ResourceDatabase;
@@ -30,6 +32,21 @@ public class DatabasePeripheral extends AbstractAnnotatedPeripheral {
 		if(key==null)return null;
 		
 		return database.getItemProperties(key);
+	}
+	
+	@PeripheralMethod
+	public Map<?,?> getRecipeType(String id){
+		RecipeType rtype=RecipeType.getRecipeType(id);
+		
+		if(rtype==null)return null;
+		
+		HashMap<String, Object> hm = new HashMap<String, Object>();
+		
+		hm.put("id",id);
+		hm.put("width",rtype.getGridWidth());
+		hm.put("height",rtype.getGridHeight());
+		
+		return hm;
 	}
 	
 	

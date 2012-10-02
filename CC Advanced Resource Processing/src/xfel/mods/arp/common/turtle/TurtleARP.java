@@ -33,6 +33,7 @@ public class TurtleARP implements ITurtleUpgrade {
 		public Peripheral(ITurtleAccess turtle) {
 			super(new TurtleInventoryProvider(turtle));
 			this.turtle = turtle;
+			type = "arpturtle";
 		}
 
 		private Map doDetect(ForgeDirection side) {
@@ -65,21 +66,22 @@ public class TurtleARP implements ITurtleUpgrade {
 				}
 			}
 			ItemKey type = new ItemKey(item, damage);
-			
+
 			return database.getItemProperties(type);
 		}
-		
+
 		@PeripheralMethod
-		public void detect(){
+		public void detect() {
 			doDetect(ForgeDirection.getOrientation(turtle.getFacingDir()));
 		}
+
 		@PeripheralMethod
-		public void detectUp(){
+		public void detectUp() {
 			doDetect(ForgeDirection.UP);
 		}
-		
+
 		@PeripheralMethod
-		public void detectDown(){
+		public void detectDown() {
 			doDetect(ForgeDirection.DOWN);
 		}
 
