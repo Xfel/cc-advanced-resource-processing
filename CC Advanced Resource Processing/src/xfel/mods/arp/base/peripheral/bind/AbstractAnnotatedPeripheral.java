@@ -20,6 +20,7 @@ import java.util.Map;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableBiMap.Builder;
+import com.google.common.primitives.Booleans;
 import com.google.common.primitives.Primitives;
 
 import dan200.computer.api.IComputerAccess;
@@ -31,6 +32,7 @@ public abstract class AbstractAnnotatedPeripheral extends AbstractPeripheral {
 	private static class BindingData {
 		String[] mnames;
 		Method[] methods;
+		boolean[] async;
 	}
 
 	private static Map<Class<? extends AbstractAnnotatedPeripheral>, BindingData> computedData = new HashMap<Class<? extends AbstractAnnotatedPeripheral>, BindingData>();
@@ -44,6 +46,7 @@ public abstract class AbstractAnnotatedPeripheral extends AbstractPeripheral {
 
 		ArrayList<String> names = new ArrayList<String>();
 		ArrayList<Method> methods = new ArrayList<Method>();
+		ArrayList<Boolean> async=new ArrayList<Boolean>();
 
 		for (Method method : cls.getMethods()) {
 			if (method.isAnnotationPresent(PeripheralMethod.class)) {
@@ -57,12 +60,14 @@ public abstract class AbstractAnnotatedPeripheral extends AbstractPeripheral {
 
 				names.add(name);
 				methods.add(method);
+				async.add(ann.async());
 			}
 		}
 
 		bdata = new BindingData();
 		bdata.methods = (Method[]) methods.toArray(new Method[methods.size()]);
 		bdata.mnames = (String[]) names.toArray(new String[names.size()]);
+		bdata.async=Booleans.toArray(async);
 
 		computedData.put(cls, bdata);
 
@@ -88,9 +93,24 @@ public abstract class AbstractAnnotatedPeripheral extends AbstractPeripheral {
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, int methodIndex,
-			Object[] arguments) throws Exception {
-		Method method = bindingData.methods[methodIndex];
+			final Object[] arguments) throws Exception {
+		final Method method = bindingData.methods[methodIndex];
+		
+		if(bindingData.async[methodIndex]){
+			return new Object[]{queueTask(computer, new Task() {
+				
+				@Override
+				protected Object[] execute() throws Exception {
+					return doCallMethod(arguments, method);
+				}
+			})};
+		}
 
+		return doCallMethod(arguments, method);
+	}
+
+	protected Object[] doCallMethod(Object[] arguments, Method method)
+			throws Exception, IllegalAccessException {
 		Class<?>[] argtypes = method.getParameterTypes();
 		Annotation[][] argannos = method.getParameterAnnotations();
 

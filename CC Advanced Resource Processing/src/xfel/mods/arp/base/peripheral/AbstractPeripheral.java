@@ -10,7 +10,11 @@ package xfel.mods.arp.base.peripheral;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
@@ -23,6 +27,103 @@ import dan200.turtle.api.ITurtlePeripheral;
  * 
  */
 public abstract class AbstractPeripheral implements ITurtlePeripheral {
+
+	/**
+	 * A task which is started by a peripheral method, but should be executed on
+	 * the minecraft update thread.
+	 * 
+	 * <br/>
+	 * 
+	 * The following lua code could call an async function:
+	 * 
+	 * <pre>
+	 * function async(...)
+	 * 	local taskId = peripehral.call("myasyncfunc",...)
+	 * 	
+	 * 	local evt, id, success, param
+	 * 	while id ~= taskId do
+	 * 		evt, id, success, param = os.pullEvent("task_result")
+	 * 	end
+	 * 	
+	 * 	if success then
+	 * 		if param then
+	 * 			return unpack(param)
+	 * 		end
+	 * 	else 
+	 * 		error(param)
+	 * 	end
+	 * end
+	 * </pre>
+	 * 
+	 * @author Xfel
+	 * 
+	 */
+	protected static abstract class Task {
+		int id;
+		IComputerAccess computer;
+
+		/**
+		 * Default constructor
+		 */
+		protected Task() {
+		}
+
+		/**
+		 * Returns the task id
+		 * 
+		 * @return the task id
+		 */
+		protected final int getId() {
+			return id;
+		}
+
+		/**
+		 * Returns the computer that requested this task and will therefore
+		 * recieve the results.
+		 * 
+		 * @return the owning computer
+		 */
+		protected final IComputerAccess getComputer() {
+			return computer;
+		}
+
+		/**
+		 * Implement your task in this method. return values and exceptions are
+		 * treated like in
+		 * {@link IPeripheral#callMethod(IComputerAccess, int, Object[])}
+		 * 
+		 * @return some results to post to
+		 * @throws Exception
+		 *             if an error occurs
+		 * 
+		 */
+		protected abstract Object[] execute() throws Exception;
+
+		// executes the task and posts a result event
+		void doExecute() {
+			try {
+				Object[] result = execute();
+
+				Object[] eventParams = { Integer.valueOf(id), Boolean.TRUE,
+						null };
+
+				if (result != null && result.length > 0) {
+					Map<Integer, Object> table = new HashMap<Integer, Object>(
+							result.length);
+					for (int i = 0; i < eventParams.length; i++) {
+						table.put(Integer.valueOf(i + 1), result[i]);
+					}
+					eventParams[2] = table;
+				}
+
+				computer.queueEvent("task_result", eventParams);
+			} catch (Exception e) {
+				Object[] eventParams = { Integer.valueOf(id), Boolean.FALSE,
+						e.getMessage() };
+				computer.queueEvent("task_result", eventParams);
+			}
+		}
+	}
 
 	public static String getStringArg(Object[] arguments, int index) {
 		if (index < arguments.length && arguments[index] != null) {
@@ -182,7 +283,27 @@ public abstract class AbstractPeripheral implements ITurtlePeripheral {
 		return true;
 	}
 
+	private final AtomicInteger taskIds = new AtomicInteger();
+
+	private Queue<Task> taskQueue = new LinkedList<Task>();
+
+	protected int queueTask(IComputerAccess computer, Task task) {
+		int taskId = task.id = taskIds.incrementAndGet();
+		task.computer = computer;
+		synchronized (taskQueue) {
+			taskQueue.add(task);
+		}
+		return taskId;
+	}
+
 	@Override
 	public void update() {
+		Task task;
+		synchronized (taskQueue) {
+			task = taskQueue.poll();
+		}
+		if (task != null) {
+			task.doExecute();
+		}
 	}
 }
