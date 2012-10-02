@@ -1,55 +1,50 @@
 
+local tuside
+
+if peripheral.getType("right") == "arpturtle" then
+	tuside = "right"
+elseif peripheral.getType("left") == "arpturtle" then
+	tuside = "left"
+end
+
+function isAvailable()
+	return tuside ~= nil
+end
+
 function getInventory(_key)
-	return inventory.get("right",_key)
+	if not tuside then
+		error("ARP Turtle upgrade not available")
+	end
+	
+	return inventory.get(tuside,_key)
 end
 
 function detect()
-	local tTable = {peripheral.call("right","detect")}
-	
-	local tResult = {}
-	
-	local i = 1
-	while i <= #tTable do
-		local tStack = db.stack(tTable[i],tTable[i+1],tTable[i+2])
-		
-		i = i + 3
-		
-		table.insert(tResult,tStack)
+	if not tuside then
+		error("ARP Turtle upgrade not available")
 	end
 	
-	return tResult
+	local tStack = peripheral.call(tuside, "detect")
+	
+	return db.setStackMT(tStack)
 end
 
 function detectUp()
-	local tTable = {peripheral.call("right","detectUp")}
-	
-	local tResult = {}
-	
-	local i = 1
-	while i <= #tTable do
-		local tStack = db.stack(tTable[i],tTable[i+1],tTable[i+2])
-		
-		i = i + 3
-		
-		table.insert(tResult,tStack)
+	if not tuside then
+		error("ARP Turtle upgrade not available")
 	end
 	
-	return tResult
+	local tStack = peripheral.call(tuside, "detectUp")
+	
+	return db.setStackMT(tStack)
 end
 
 function detectDown()
-	local tTable = {peripheral.call("right","detectDown")}
-	
-	local tResult = {}
-	
-	local i = 1
-	while i <= #tTable do
-		local tStack = db.stack(tTable[i],tTable[i+1],tTable[i+2])
-		
-		i = i + 3
-		
-		table.insert(tResult,tStack)
+	if not tuside then
+		error("ARP Turtle upgrade not available")
 	end
 	
-	return tResult
+	local tStack = peripheral.call(tuside, "detectDown")
+	
+	return db.setStackMT(tStack)
 end

@@ -115,7 +115,7 @@ function move(amount, _inv1, _slot1, _inv2, _slot2)
 end
 
 function isPresent(_side, _key)
-	return peripheral.getType(_side) == "inventory" and peripheral.call(_side, "isInventoryValid", _key)
+	return (peripheral.getType(_side) == "inventory" or peripheral.getType(_side) == "arpturtle") and peripheral.call(_side, "isInventoryValid", _key)
 end
 
 local inv_mt = {
@@ -161,6 +161,7 @@ inv_mt.__index = function(t, i)
 		if stack then
 			stack.inventory = t;
 			stack.slot = i
+			stack.item = db.getItem(stack.item)
 		end
 		return stack
 	end

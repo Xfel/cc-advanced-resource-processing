@@ -125,14 +125,24 @@ function db.getItem(_name)
 	return setmetatable(item, item_mt)
 end
 
+function db.getRecipeType(id)
+	local rtype = callNative("getRecipeType", id)
+	
+	return rtype
+end
+
 function db.getRecipeResult(recipe, rtype)
 	if not recipe then
 		return nil
 	end
 
 	local rrtype = recipe.type or rtype
-
-	if not rrtype then
+	
+	if type(rrtype) == "string" then
+		rrtype = db.getRecipeType(rrtype)
+	end
+	
+	if not rrtype or type(rrtype) ~= "table" then
 		error("no valid recipe type specified")
 	end
 
@@ -172,6 +182,10 @@ end
 function db.getRecipesFor(item, rtype)
 	if not item then
 		return {}
+	end
+	
+	if type(rtype) == "table" then
+		rtype = rtype.id
 	end
 
 	local result = callNative("getRecipes", item.name, rtype)
