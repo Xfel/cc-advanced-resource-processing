@@ -14,15 +14,22 @@ import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 import net.minecraftforge.common.ForgeDirection;
 
-public abstract class BlockExtended extends Block {
+public abstract class BlockExtended extends BlockContainer {
 
 	protected BlockExtended(int id, Material material) {
 		super(id, material);
 		isBlockContainer=true;
 	}
 	
+	@Deprecated
 	@Override
-	public abstract TileEntity createTileEntity(World world, int metadata);
+	public TileEntity createNewTileEntity(World world) {
+		// this method should not be called, as it is not metadata sensitive.
+		return createTileEntity(world, 0);
+	}
+	
+	@Override
+	public abstract TileEntity createNewTileEntity(World world, int metadata);
 	
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -54,11 +61,6 @@ public abstract class BlockExtended extends Block {
 
 		return false;
 	}
-
-	@Override
-	public void onBlockAdded(World world, int x, int y, int z) {
-		world.setBlockTileEntity(x, y, z, createTileEntity(world, world.getBlockMetadata(x, y, z)));
-	}
 	
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z,
@@ -84,15 +86,6 @@ public abstract class BlockExtended extends Block {
 		}
 		
 		world.removeBlockTileEntity(x, y, z);
-	}
-	
-	@Override
-	public void onBlockEventReceived(World world, int x, int y, int z, int event, int arg) {
-		TileEntity te = world.getBlockTileEntity(x, y, z);
-
-		if (te!=null) {
-			te.receiveClientEvent(event, arg);
-		}
 	}
 
 }

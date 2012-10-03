@@ -40,7 +40,7 @@ public class BlockDigitalChest extends BlockExtended{
 	}
 
 	@Override
-	public TileEntity createTileEntity(World world, int metadata) {
+	public TileEntity createNewTileEntity(World world, int metadata) {
 		return new TileDigitalChest();
 	}
 	

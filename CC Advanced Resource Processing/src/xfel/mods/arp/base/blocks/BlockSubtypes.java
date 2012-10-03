@@ -54,7 +54,7 @@ public abstract class BlockSubtypes extends BlockExtended {
 	}
 
 	@Override
-	public TileEntity createTileEntity(World world, int metadata) {
+	public TileEntity createNewTileEntity(World world, int metadata) {
 		if (subtypes[metadata] == null)
 			return null;
 
