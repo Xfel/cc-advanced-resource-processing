@@ -4,12 +4,11 @@
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Minecraft"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/BuildCraft"/>
 	<classpathentry kind="lib" path="/Minecraft/jars/bin/lwjgl.jar" sourcepath="D:/Software-Bibliothek/java/lwjgl/src.zip">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Minecraft/jars/bin/natives"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/mcmoddev/mcp/lib/ComputerCraft.zip"/>
+	<classpathentry kind="lib" path="D:/mcmoddev/mcp/lib/ComputerCraft.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
