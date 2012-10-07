@@ -108,7 +108,7 @@ public class RomInjector {
 //			bufferedSource = new BufferedInputStream(source);
 //		}
 
-		if (targetFile.exists()) {
+		if (targetFile.exists() && !version.endsWith(".version@")) {
 			FileInputStream fis = new FileInputStream(targetFile);
 			try {
 //				bufferedSource.mark(256);
@@ -124,11 +124,11 @@ public class RomInjector {
 				}
 			}
 		} else if (!targetFile.getParentFile().exists()&&!targetFile.getParentFile().mkdirs()) {
-			logger.log(Level.WARNING, "Could not create file:  {0}", targetFile);
+			logger.log(Level.WARNING, "Could not create file:  "+ targetFile);
 			return;
 		}
 		
-		logger.log(Level.INFO, "Injecting api file: {0}",targetName);
+		logger.log(Level.INFO, "Injecting api file: "+targetName);
 		
 		FileOutputStream fos = new FileOutputStream(targetFile);
 		try {

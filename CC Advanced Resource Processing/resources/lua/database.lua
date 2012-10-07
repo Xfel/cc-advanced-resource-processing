@@ -76,6 +76,20 @@ local item_mt = {
 	end,
 	__metatable = "item"
 }
+
+local rtype_mt = {
+	-- metafunctions
+	__eq = function(a,b)
+		return string.lower(a.id) == string.lower(b.id)
+	end,
+	__newindex = function()
+		error("Can't change recipe type properties")
+	end,
+	__tostring = function(t)
+		return t.id.."("..t.width.."x"..t.height..")"
+	end,
+	__metatable = "item"
+}
 --[[ seperate indexer
 item_mt.__index = function(t, prop)
 -- check for global functions etc.
@@ -116,11 +130,12 @@ function db.getItem(_name)
 
 	item = callNative("getItem", _name)
 
-	if not callNative("checkItem", _name) then
+	if not item then
 		return nil
 	end
 
 	itemCache[item.name] = item
+	itemCache[item.id] = item
 
 	return setmetatable(item, item_mt)
 end

@@ -26,15 +26,14 @@ public class DatabaseAPI {
 		itemStackPropertyProviders.add(provider);
 	}
 
-	public void registerItemPropertyProvider(
-			IItemPropertyProvider provider) {
+	public void registerItemPropertyProvider(IItemPropertyProvider provider) {
 		itemPropertyProviders.add(provider);
 	}
 
 	public Map<String, Object> getItemProperties(ItemKey key) {
 		HashMap<String, Object> hm = new HashMap<String, Object>();
 		hm.put("id", key.toString());
-		hm.put("name", key.getName());
+		hm.put("name", getItemName(key));
 
 		for (IItemPropertyProvider ipp : itemPropertyProviders) {
 			ipp.getProperties(key, hm);
@@ -45,10 +44,10 @@ public class DatabaseAPI {
 
 	public Map<String, Object> getItemStackProperties(ItemStack stack) {
 		HashMap<String, Object> hm = new HashMap<String, Object>();
-		hm.put("item", (new ItemKey(stack)).toString());
-		hm.put("stackSize", stack.stackSize);
-		
-		if(stack.isItemStackDamageable()){
+		hm.put("item", new ItemKey(stack).toString());
+		hm.put("count", stack.stackSize);
+
+		if (stack.isItemStackDamageable()) {
 			hm.put("damage", stack.getItemDamage());
 		}
 
@@ -66,6 +65,10 @@ public class DatabaseAPI {
 		}
 
 		return INSTANCE;
+	}
+
+	public String getItemName(ItemKey key) {
+		return null;
 	}
 
 	public void registerItem(ItemKey item) {

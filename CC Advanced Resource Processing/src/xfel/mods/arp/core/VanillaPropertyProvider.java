@@ -88,7 +88,7 @@ public class VanillaPropertyProvider implements IItemPropertyProvider,
 	public void getProperties(ItemKey key, Map<String, Object> result) {
 		Item item = key.getItem();
 
-		result.put("damagable", item.isDamageable());
+		result.put("damageable", item.isDamageable());
 		result.put("repairable", item.isRepairable());
 		result.put("maxDamage", item.getMaxDamage());
 		ItemStack containerItemStack = item.getContainerItemStack(key

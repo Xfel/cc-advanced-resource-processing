@@ -135,8 +135,9 @@ public class ItemKey {
 
 	public String getName() {
 		if (name == null) {
-			name = item.getItemNameIS(new ItemStack(item, 0, metadata)).concat(
-					".name");
+			String iname = item.getItemNameIS(new ItemStack(item, 0, metadata));
+			if (iname != null)
+				name = iname.concat(".name");
 		}
 		return name;
 	}

@@ -43,8 +43,7 @@ public class ResourceDatabase extends DatabaseAPI {
 		return (ResourceDatabase) INSTANCE;
 	}
 
-	private BiMap<String, ItemKey> itemMapping = HashBiMap
-			.create(32000);
+	private BiMap<String, ItemKey> itemMapping = HashBiMap.create(32000);
 
 	private HashSet<ItemKey> ignoredItems = new HashSet<ItemKey>();
 
@@ -60,9 +59,12 @@ public class ResourceDatabase extends DatabaseAPI {
 
 	@Override
 	public void registerItem(ItemKey item) {
-		itemMapping.put(
-				StringTranslate.getInstance().translateKey(item.getName()).toLowerCase(),
-				item);
+		String name = item.getName();
+		if (name == null)
+			throw new IllegalArgumentException(
+					"Can't register an item without name");
+		itemMapping.put(StringTranslate.getInstance().translateKey(name)
+				.toLowerCase(), item);
 	}
 
 	@Override
@@ -113,30 +115,30 @@ public class ResourceDatabase extends DatabaseAPI {
 		return itemMapping.inverse().get(key);
 	}
 
-	public void load(){
-		
-		
-		if(FMLCommonHandler.instance().getSide().isClient()){
+	public void load() {
+
+		if (FMLCommonHandler.instance().getSide().isClient()) {
 			lookupItemsCreative();
-		}else{
+		} else {
 			lookupItemsFromList();
 		}
 	}
-	
+
 	private void lookupItemsCreative() {
 		List<ItemStack> items = new ArrayList<ItemStack>();
 
 		for (int i = 0; i < Item.itemsList.length; i++) {
 			Item item = Item.itemsList[i];
 			if (item != null) {
-				AdvancedResourceProcessing.sideHandler.getCreativeSubtypes(item, items);
+				AdvancedResourceProcessing.sideHandler.getCreativeSubtypes(
+						item, items);
 			}
 		}
 
 		for (ItemStack stack : items) {
 			ItemKey key = new ItemKey(stack);
 
-			if (!ignoredItems.contains(key)
+			if (key.getName() != null && !ignoredItems.contains(key)
 					&& !itemMapping.containsKey(key.getName())
 					&& !itemMapping.containsValue(key)) {
 				registerItem(key);

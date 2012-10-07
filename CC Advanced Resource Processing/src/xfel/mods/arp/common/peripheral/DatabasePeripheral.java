@@ -1,8 +1,18 @@
+/** 
+ * Copyright (c) Xfel, 2012
+ * 
+ * This file is distributed under the terms of the Minecraft Mod Public 
+ * License 1.0, or MMPL. Please check the contents of the license located in
+ * http://www.mod-buildcraft.com/MMPL-1.0.txt
+ */
 package xfel.mods.arp.common.peripheral;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import dan200.computer.api.IPeripheral;
 
@@ -23,13 +33,17 @@ public class DatabasePeripheral extends AbstractAnnotatedPeripheral {
 	protected DatabasePeripheral(String type) {
 		super(type);
 		database=ResourceDatabase.instance();
+		System.out.println(database.getClass());
 	}
 	
 	@PeripheralMethod
 	public Map<?, ?> getItem(String nameOrId){
 		ItemKey key=database.getItem(nameOrId);
 		
-		if(key==null)return null;
+		if(key==null){
+			System.out.println("Item not found: "+nameOrId);
+			return null;
+		}
 		
 		return database.getItemProperties(key);
 	}

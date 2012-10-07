@@ -159,5 +159,7 @@ public class AdvancedResourceProcessing {
 		RomInjector.injectClasspathFile("apis/inventory", "lua/inventory.lua", MOD_VERSION);
 		RomInjector.injectClasspathFile("help/inventory", "help/inventory.txt", MOD_VERSION);
 		RomInjector.injectClasspathFile("programs/inventory-dump", "lua/dumpinv.lua", MOD_VERSION);
+		
+		ResourceDatabase.instance().load();
 	}
 }
