@@ -156,12 +156,13 @@ local inv_mt = {
 inv_mt.__index = function(t, i)
 	assert(inventory.isPresent(t.side), "Invalid Inventory")
 	if type(i) == "number" then
-		local stack = db.setStackMT(peripheral.call(t.side, "getInventorySlot", t.key, i))
+		local stack = peripheral.call(t.side, "getInventorySlot", t.key, i)
 		
 		if stack then
 			stack.inventory = t;
 			stack.slot = i
 			stack.item = db.getItem(stack.item)
+			stack = db.setStackMT(stack)
 		end
 		return stack
 	end

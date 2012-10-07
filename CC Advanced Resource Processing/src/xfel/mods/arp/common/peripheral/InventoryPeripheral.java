@@ -11,9 +11,12 @@ import java.util.Map;
 
 import org.objectweb.asm.tree.analysis.SourceInterpreter;
 
+import cpw.mods.fml.common.registry.LanguageRegistry;
+
 import xfel.mods.arp.base.peripheral.bind.PeripheralMethod;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
+import net.minecraft.src.StringTranslate;
 
 public class InventoryPeripheral extends DatabasePeripheral {
 
@@ -56,7 +59,7 @@ public class InventoryPeripheral extends DatabasePeripheral {
 		if (inventory == null)
 			throw new IllegalArgumentException("Invalid inventory");
 
-		return inventory.getInvName();
+		return StringTranslate.getInstance().translateKey(inventory.getInvName());
 	}
 
 	@PeripheralMethod
@@ -75,6 +78,8 @@ public class InventoryPeripheral extends DatabasePeripheral {
 
 		ItemStack stack = inventory.getStackInSlot(slot);
 
+		if(stack==null)return null;
+		
 		return database.getItemStackProperties(stack);
 	}
 

@@ -33,7 +33,6 @@ public class DatabasePeripheral extends AbstractAnnotatedPeripheral {
 	protected DatabasePeripheral(String type) {
 		super(type);
 		database=ResourceDatabase.instance();
-		System.out.println(database.getClass());
 	}
 	
 	@PeripheralMethod

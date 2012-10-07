@@ -64,18 +64,20 @@ print("Contents:")
 local itemMap = {}
 local totalDamage = {}
 for _,stack in inv:list() do
-	local oldCount = itemMap[stack.item] or 0
-	itemMap[stack.item] = oldCount + stack.count
+	local oldCount = itemMap[stack.item.name] or 0
+	itemMap[stack.item.name] = oldCount + stack.count
 	if stack.damage and stack.item.damageable then
 		local maxd = stack.item.maxDamage
-		local olddmg = (totalDamage[stack.item] or 0)
+		local olddmg = (totalDamage[stack.item.name] or 0)
 		if maxd == 0 then
-			totalDamage[stack.item] = olddmg + 100
+			totalDamage[stack.item.name] = olddmg + 100
 		else
-			totalDamage[stack.item] = olddmg + stack.damage * 100 / maxd
+			totalDamage[stack.item.name] = olddmg + stack.damage * 100 / maxd
 		end
 	end
 end
+
+print("Found items...")
 
 -- print items
 local nLinesPrinted = 5
@@ -93,6 +95,6 @@ for item, count in pairs(itemMap) do
 	if totalDamage[item] then
 		printDamage = string.format(" (%3.1d%% OK)", 100-totalDamage[item] / count)
 	end
-	nLinesPrinted = nLinesPrinted + print(string.format(" %4d of %s", count, item.name), printDamage)
+	nLinesPrinted = nLinesPrinted + print(string.format(" %4d of %s", count, item), printDamage)
 end
 

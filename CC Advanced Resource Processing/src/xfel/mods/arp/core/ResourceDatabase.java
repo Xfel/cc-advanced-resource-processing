@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Level;
 
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
@@ -116,15 +117,18 @@ public class ResourceDatabase extends DatabaseAPI {
 	}
 
 	public void load() {
-
+		AdvancedResourceProcessing.MOD_LOGGER.log(Level.INFO, "Loading resource database...");
+		
 		if (FMLCommonHandler.instance().getSide().isClient()) {
 			lookupItemsCreative();
 		} else {
 			lookupItemsFromList();
 		}
+		AdvancedResourceProcessing.MOD_LOGGER.log(Level.INFO, itemMapping.size()+" Items found");
 	}
 
 	private void lookupItemsCreative() {
+		AdvancedResourceProcessing.MOD_LOGGER.log(Level.INFO, "Performing item lookup using creative tabs");
 		List<ItemStack> items = new ArrayList<ItemStack>();
 
 		for (int i = 0; i < Item.itemsList.length; i++) {
@@ -147,6 +151,7 @@ public class ResourceDatabase extends DatabaseAPI {
 	}
 
 	private void lookupItemsFromList() {
+		AdvancedResourceProcessing.MOD_LOGGER.log(Level.INFO, "Performing item lookup using the default scan range");
 		for (Item item : Item.itemsList) {
 			if (item == null) {
 				continue;

@@ -86,10 +86,10 @@ public class AdvancedResourceProcessing {
 		
 		config.load();
 		
-		blockAdvancedMachine=new BlockAdvancedMachine(config.getOrCreateBlockIdProperty("advancedmachine", 2040).getInt());
+		blockAdvancedMachine=new BlockAdvancedMachine(config.getBlock("advancedmachine", 2040).getInt());
 		GameRegistry.registerBlock(blockAdvancedMachine, ItemBlockSubtypes.class);
 
-		blockDigitalChest=new BlockDigitalChest(config.getOrCreateBlockIdProperty("digitalchest", 2041).getInt());
+		blockDigitalChest=new BlockDigitalChest(config.getBlock("digitalchest", 2041).getInt());
 		GameRegistry.registerBlock(blockDigitalChest);
 		
 		config.save();
