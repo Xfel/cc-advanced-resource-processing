@@ -48,31 +48,34 @@ public class TurtleARP implements ITurtleUpgrade {
 					turtle.getPosition());
 			target.moveLocal(side, 1);
 
-			Block block = target.getBlock();
-			Item item = Item.itemsList[block.blockID];
-
-			// use reflection to calculate item damage
-			int damage = 0;
-			if (item.getHasSubtypes()) {
-				damage = target.getBlockMetadata();
-				try {
-					damage = ((Number) ReflectionHelper.findMethod(Block.class,
-							block, new String[] { "damageDropped", "b" },
-							new Class[] { int.class }).invoke(block,
-							Integer.valueOf(damage))).intValue();
-				} catch (InvocationTargetException e) {
-					AdvancedResourceProcessing.MOD_LOGGER
-							.log(Level.WARNING,
-									"Unexpected exception while trying to decode block metadata to item damage. Using direct metadata...",
-									e.getTargetException());
-				} catch (Exception e) {
-					AdvancedResourceProcessing.MOD_LOGGER
-							.log(Level.WARNING,
-									"Unexpected exception while trying to decode block metadata to item damage. Using direct metadata...",
-									e);
-				}
-			}
-			ItemKey type = new ItemKey(item, damage);
+			ItemStack stack=target.getPickBlock();
+			
+//			Block block = target.getBlock();
+//			Item item = Item.itemsList[block.blockID];
+//
+//			// use reflection to calculate item damage
+//			int damage = 0;
+//			if (item.getHasSubtypes()) {
+//				damage = target.getBlockMetadata();
+//				try {
+//					damage = ((Number) ReflectionHelper.findMethod(Block.class,
+//							block, new String[] { "damageDropped", "b" },
+//							new Class[] { int.class }).invoke(block,
+//							Integer.valueOf(damage))).intValue();
+//				} catch (InvocationTargetException e) {
+//					AdvancedResourceProcessing.MOD_LOGGER
+//							.log(Level.WARNING,
+//									"Unexpected exception while trying to decode block metadata to item damage. Using direct metadata...",
+//									e.getTargetException());
+//				} catch (Exception e) {
+//					AdvancedResourceProcessing.MOD_LOGGER
+//							.log(Level.WARNING,
+//									"Unexpected exception while trying to decode block metadata to item damage. Using direct metadata...",
+//									e);
+//				}
+//			}
+//			ItemKey type = new ItemKey(item, damage);
+			ItemKey type = new ItemKey(stack);
 
 			return database.getItemProperties(type);
 		}

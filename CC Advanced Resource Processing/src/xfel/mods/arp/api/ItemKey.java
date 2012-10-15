@@ -135,9 +135,14 @@ public class ItemKey {
 
 	public String getName() {
 		if (name == null) {
-			String iname = item.getItemNameIS(new ItemStack(item, 0, metadata));
-			if (iname != null)
-				name = iname.concat(".name");
+			try {
+				String iname = item.getItemNameIS(new ItemStack(item, 0, metadata));
+				if (iname != null)
+					name = iname.concat(".name");
+			} catch (Exception e) {
+				// an exception will most likely indicate that the given damage value is unused (eg. ArrayOutOfBoundsException),
+				// so let's assume it and do nothing.
+			}
 		}
 		return name;
 	}

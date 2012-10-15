@@ -9,8 +9,11 @@ package xfel.mods.arp.base.utils;
 
 import net.minecraft.src.AxisAlignedBB;
 import net.minecraft.src.Block;
+import net.minecraft.src.ItemStack;
+import net.minecraft.src.MovingObjectPosition;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.Vec3;
+import net.minecraft.src.Vec3Pool;
 import net.minecraft.src.World;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -76,7 +79,7 @@ public class WorldCoordinate {
 	public int getBlockId() {
 		return world.getBlockId(x, y, z);
 	}
-	
+
 	public Block getBlock() {
 		return Block.blocksList[world.getBlockId(x, y, z)];
 	}
@@ -104,6 +107,19 @@ public class WorldCoordinate {
 
 	public boolean isEmpty() {
 		return world.isAirBlock(x, y, z);
+	}
+
+	public ItemStack getPickBlock() {
+		Block block = getBlock();
+		if (block != null) {
+			return block.getPickBlock(toMovingObjectPosition(), world, x, y, z);
+		}
+		return null;
+	}
+
+	public MovingObjectPosition toMovingObjectPosition() {
+		return new MovingObjectPosition(x, y, z, 0, Vec3.getVec3Pool()
+				.getVecFromPool(0, 0, 0));
 	}
 
 }
