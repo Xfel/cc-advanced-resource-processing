@@ -136,12 +136,14 @@ public class ItemKey {
 	public String getName() {
 		if (name == null) {
 			try {
-				String iname = item.getItemNameIS(new ItemStack(item, 0, metadata));
+				String iname = item.getItemNameIS(new ItemStack(item, 0,
+						metadata));
 				if (iname != null)
 					name = iname.concat(".name");
 			} catch (Exception e) {
-				// an exception will most likely indicate that the given damage value is unused (eg. ArrayOutOfBoundsException),
-				// so let's assume it and do nothing.
+				// an exception will most likely indicate that the given damage
+				// value is unused (eg. ArrayOutOfBoundsException), so let's
+				// assume it and do nothing.
 			}
 		}
 		return name;
@@ -149,12 +151,13 @@ public class ItemKey {
 
 	public boolean isBlock() {
 		return item instanceof ItemBlock
+				&& item.shiftedIndex < Block.blocksList.length
 				&& Block.blocksList[item.shiftedIndex] != null;
 	}
 
 	public Block getBlock() {
 		int id = item.shiftedIndex;
-		if (id >= Block.blocksList.length)
+		if (!(item instanceof ItemBlock) || id >= Block.blocksList.length)
 			return null;
 		return Block.blocksList[id];
 	}
