@@ -118,7 +118,7 @@ public class WorldCoordinate {
 	}
 
 	public MovingObjectPosition toMovingObjectPosition() {
-		return new MovingObjectPosition(x, y, z, 0, Vec3.getVec3Pool()
+		return new MovingObjectPosition(x, y, z, 0, Vec3.field_82592_a
 				.getVecFromPool(0, 0, 0));
 	}
 

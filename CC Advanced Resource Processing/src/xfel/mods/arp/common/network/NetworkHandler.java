@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import xfel.mods.arp.common.AdvancedResourceProcessing;
 
 import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.NetworkManager;
+import net.minecraft.src.INetworkManager;
 import net.minecraft.src.Packet;
 import net.minecraft.src.Packet250CustomPayload;
 import net.minecraft.src.TileEntity;
@@ -82,7 +82,7 @@ public class NetworkHandler implements IPacketHandler {
 	}
 
 	@Override
-	public void onPacketData(NetworkManager manager,
+	public void onPacketData(INetworkManager manager,
 			Packet250CustomPayload packet, Player player) {
 		if (packet.channel.equals(TILE_UPDATE_CHANNEL)) {
 			updateTileEntity(packet.data, ((EntityPlayer) player).worldObj);

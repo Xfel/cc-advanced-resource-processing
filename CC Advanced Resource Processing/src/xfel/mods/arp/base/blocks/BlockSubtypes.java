@@ -83,7 +83,7 @@ public abstract class BlockSubtypes extends BlockExtended {
 	}
 	
 	@Override
-	protected int damageDropped(int metadata) {
+	public int damageDropped(int metadata) {
 		return metadata;
 	}
 

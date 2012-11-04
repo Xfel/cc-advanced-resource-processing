@@ -62,37 +62,39 @@ public class ContainerDigitalAllocator extends Container {
 		return player.getDistanceSq(tile.xCoord + 0.5D, tile.yCoord + 0.5D,
 				tile.zCoord + 0.5D) <= 64.0D;
 	}
-
-	@Override
-	public ItemStack transferStackInSlot(int slotId) {
-		if (slotId < bufferInventoryStart) {
-			return null;
-		}
-		ItemStack stack = null;
-		Slot slot = (Slot) this.inventorySlots.get(slotId);
-
-		if (slot != null && slot.getHasStack()) {
-			ItemStack slotStack = slot.getStack();
-			stack = slotStack.copy();
-
-			if (slotId < playerInventoryStart) {
-				if (!this.mergeItemStack(slotStack, playerInventoryStart,
-						this.inventorySlots.size(), true)) {
-					return null;
-				}
-			} else if (!this.mergeItemStack(slotStack, bufferInventoryStart,
-					playerInventoryStart, false)) {
-				return null;
-			}
-
-			if (slotStack.stackSize == 0) {
-				slot.putStack((ItemStack) null);
-			} else {
-				slot.onSlotChanged();
-			}
-		}
-
-		return stack;
-	}
+	
+	
+// TODO find new method
+//	@Override
+//	public ItemStack transferStackInSlot(int slotId) {
+//		if (slotId < bufferInventoryStart) {
+//			return null;
+//		}
+//		ItemStack stack = null;
+//		Slot slot = (Slot) this.inventorySlots.get(slotId);
+//
+//		if (slot != null && slot.getHasStack()) {
+//			ItemStack slotStack = slot.getStack();
+//			stack = slotStack.copy();
+//
+//			if (slotId < playerInventoryStart) {
+//				if (!this.mergeItemStack(slotStack, playerInventoryStart,
+//						this.inventorySlots.size(), true)) {
+//					return null;
+//				}
+//			} else if (!this.mergeItemStack(slotStack, bufferInventoryStart,
+//					playerInventoryStart, false)) {
+//				return null;
+//			}
+//
+//			if (slotStack.stackSize == 0) {
+//				slot.putStack((ItemStack) null);
+//			} else {
+//				slot.onSlotChanged();
+//			}
+//		}
+//
+//		return stack;
+//	}
 
 }
