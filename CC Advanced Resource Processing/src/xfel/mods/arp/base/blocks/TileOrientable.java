@@ -11,8 +11,6 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-import buildcraft.api.core.Orientations;
-
 import xfel.mods.arp.common.network.INetworkedTile;
 import xfel.mods.arp.common.network.NetworkHandler;
 import net.minecraft.src.BlockPistonBase;
@@ -168,7 +166,7 @@ public class TileOrientable extends TileExtended implements INetworkedTile {
 	}
 
 	protected void requestNetworkUpdate() {
-		worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	@Override

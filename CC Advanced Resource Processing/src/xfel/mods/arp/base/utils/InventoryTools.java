@@ -93,7 +93,7 @@ public class InventoryTools {
 						&& invStack.itemID == stack.itemID
 						&& (!stack.getHasSubtypes() || stack.getItemDamage() == invStack
 								.getItemDamage())
-						&& ItemStack.func_77970_a(stack, invStack)) {
+						&& ItemStack.areItemStacksEqual(stack, invStack)) {
 					int newStackSize = invStack.stackSize + remaining;
 
 					if (newStackSize <= stack.getMaxStackSize()) {

@@ -1,6 +1,6 @@
 package buildcraft.api.transport;
 
-import buildcraft.api.core.Orientations;
+import net.minecraftforge.common.ForgeDirection;
 import buildcraft.api.core.Position;
 import buildcraft.api.core.SafeTimeTracker;
 import net.minecraft.src.EntityItem;
@@ -53,21 +53,25 @@ public interface IPipedItem {
 	/**
 	 * @return the synchroTracker
 	 */
+	@Deprecated
 	public abstract SafeTimeTracker getSynchroTracker();
 
 	/**
 	 * @param synchroTracker the synchroTracker to set
 	 */
+	@Deprecated
 	public abstract void setSynchroTracker(SafeTimeTracker synchroTracker);
 
 	/**
 	 * @return the deterministicRandomization
 	 */
+	@Deprecated
 	public abstract int getDeterministicRandomization();
 
 	/**
 	 * @param deterministicRandomization the deterministicRandomization to set
 	 */
+	@Deprecated
 	public abstract void setDeterministicRandomization(int deterministicRandomization);
 
 	/**
@@ -85,7 +89,7 @@ public interface IPipedItem {
 
 	public abstract void writeToNBT(NBTTagCompound nbttagcompound);
 
-	public abstract EntityItem toEntityItem(Orientations dir);
+	public abstract EntityItem toEntityItem(ForgeDirection dir);
 
 	public abstract float getEntityBrightness(float f);
 

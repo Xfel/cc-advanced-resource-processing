@@ -28,7 +28,6 @@ import xfel.mods.arp.base.utils.WorldCoordinate;
 import xfel.mods.arp.common.AdvancedResourceProcessing;
 import xfel.mods.arp.common.CommonProxy;
 
-import buildcraft.api.core.Orientations;
 import buildcraft.api.inventory.ISpecialInventory;
 import buildcraft.api.transport.IPipeConnection;
 import buildcraft.api.transport.IPipeEntry;
@@ -527,16 +526,14 @@ public class TileDigitalAllocator extends TileOrientable implements
 			TileEntity destTile = move.getBlockTileEntity();
 			if (destTile instanceof IPipeEntry
 					&& ((IPipeEntry) destTile).acceptItems()) {
-				((IPipeEntry) destTile).entityEntering(stack.copy(),
-						Orientations.values()[getOutputSide().ordinal()]);
+				((IPipeEntry) destTile).entityEntering(stack.copy(),getOutputSide());
 				stack.stackSize = 0;
 			} else {
 				IInventory inv = InventoryTools.getInventoryAtSide(wc,
 						getOutputSide());
 				if (inv instanceof ISpecialInventory) {
 					ISpecialInventory isi = (ISpecialInventory) inv;
-					stack.stackSize -= isi.addItem(stack, true, Orientations
-							.values()[getOutputSide().getOpposite().ordinal()]);
+					stack.stackSize -= isi.addItem(stack, true,getOutputSide().getOpposite());
 				} else if (inv != null) {
 					stack.stackSize -= InventoryTools.putItemStack(inv, stack,
 							false);
@@ -624,14 +621,13 @@ public class TileDigitalAllocator extends TileOrientable implements
 	// buildcraft interop
 
 	@Override
-	public boolean isPipeConnected(Orientations with) {
-		ForgeDirection dir = with.toDirection();
-		return dir == getInputSide() || dir == getOutputSide();
+	public boolean isPipeConnected(ForgeDirection with) {
+		return with == getInputSide() || with == getOutputSide();
 	}
 
 	@Override
-	public int addItem(ItemStack stack, boolean doAdd, Orientations from) {
-		if (!isOpen() || from.toDirection() != getInputSide()
+	public int addItem(ItemStack stack, boolean doAdd, ForgeDirection from) {
+		if (!isOpen() || from != getInputSide()
 				|| !isAcceptedItem(stack))
 			return 0;
 
@@ -640,7 +636,7 @@ public class TileDigitalAllocator extends TileOrientable implements
 	}
 
 	@Override
-	public ItemStack[] extractItem(boolean doRemove, Orientations from,
+	public ItemStack[] extractItem(boolean doRemove, ForgeDirection from,
 			int maxItemCount) {
 		return new ItemStack[0];
 	}
