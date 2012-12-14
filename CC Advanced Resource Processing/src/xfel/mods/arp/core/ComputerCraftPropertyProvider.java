@@ -61,11 +61,11 @@ public class ComputerCraftPropertyProvider implements IItemPropertyProvider,
 			}
 			
 			if(rightUpgrade!=null){
-				Map<Object,Object> ltu=new Hashtable<Object, Object>();
-				ltu.put("adjective", rightUpgrade.getAdjective());
-				ltu.put("item", ResourceDatabase.instance().getItemName(new ItemKey(rightUpgrade.getCraftingItem())));
-				ltu.put("type", rightUpgrade.getType().toString());
-				result.put("rightUpgrade", ltu);
+				Map<Object,Object> rtu=new Hashtable<Object, Object>();
+				rtu.put("adjective", rightUpgrade.getAdjective());
+				rtu.put("item", ResourceDatabase.instance().getItemName(new ItemKey(rightUpgrade.getCraftingItem())));
+				rtu.put("type", rightUpgrade.getType().toString());
+				result.put("rightUpgrade", rtu);
 			}
 		}else{
 			ITurtleUpgrade upgrade=CCTurtle.getTurtleUpgrade(key.toItemStack(1));

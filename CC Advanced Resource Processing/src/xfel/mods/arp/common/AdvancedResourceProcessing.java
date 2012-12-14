@@ -114,17 +114,17 @@ public class AdvancedResourceProcessing {
 				Item.ingotGold, '#', database, 'S', Block.stone, 'R',
 				Item.redstone });
 
-		ItemStack digitalAllocator = new ItemStack(blockAdvancedMachine, 1,
-				BlockAdvancedMachine.TYPE_DIGITAL_ALLOCATOR);
-		LanguageRegistry.addName(digitalAllocator, "Digital Allocator");
-		GameRegistry.addRecipe(digitalAllocator, new Object[] { "IRI", "P#G",
-				"IRI", 'G', Item.ingotGold, '#', database, 'I', Item.ingotIron,
-				'P', Block.pistonBase, 'R', Item.redstone });
+//		ItemStack digitalAllocator = new ItemStack(blockAdvancedMachine, 1,
+//				BlockAdvancedMachine.TYPE_DIGITAL_ALLOCATOR);
+//		LanguageRegistry.addName(digitalAllocator, "Digital Allocator");
+//		GameRegistry.addRecipe(digitalAllocator, new Object[] { "IRI", "P#G",
+//				"IRI", 'G', Item.ingotGold, '#', database, 'I', Item.ingotIron,
+//				'P', Block.pistonBase, 'R', Item.redstone });
 
 		ItemStack digitalChest = new ItemStack(blockDigitalChest, 1, 0);
 		LanguageRegistry.addName(digitalChest, "Digital Chest");
-		GameRegistry.addRecipe(digitalChest, new Object[] { "SRS", "#CA",
-				"SRS", 'A', digitalAllocator, '#', inventoryreader, 'S',
+		GameRegistry.addRecipe(digitalChest, new Object[] { "SRS", "#CP",
+				"SRS", 'P', Block.pistonBase, '#', inventoryreader, 'S',
 				Block.stone, 'R', Item.redstone, 'C', Block.chest });
 
 //		ItemStack digitalWorkbench = new ItemStack(blockAdvancedMachine, 1,
@@ -139,8 +139,8 @@ public class AdvancedResourceProcessing {
 		GameRegistry.registerTileEntity(TileDatabase.class, "MatterDatabase");
 		GameRegistry.registerTileEntity(TileInventoryInterface.class,
 				"InventoryReader");
-		GameRegistry.registerTileEntity(TileDigitalAllocator.class,
-				"DigitalAllocator");
+//		GameRegistry.registerTileEntity(TileDigitalAllocator.class,
+//				"DigitalAllocator");
 //		GameRegistry.registerTileEntity(TileDigitalWorkbench.class,
 //				"DigitalWorkbench");
 		GameRegistry.registerTileEntity(TileDigitalChest.class,

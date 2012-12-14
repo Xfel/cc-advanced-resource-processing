@@ -38,6 +38,10 @@ public class ResourceDatabase extends DatabaseAPI {
 		VanillaPropertyProvider vpp = new VanillaPropertyProvider();
 		INSTANCE.registerItemPropertyProvider(vpp);
 		INSTANCE.registerItemStackPropertyProvider(vpp);
+		
+		ComputerCraftPropertyProvider cpp = new ComputerCraftPropertyProvider();
+		INSTANCE.registerItemPropertyProvider(cpp);
+		INSTANCE.registerItemStackPropertyProvider(cpp);
 	}
 
 	public static ResourceDatabase instance() {

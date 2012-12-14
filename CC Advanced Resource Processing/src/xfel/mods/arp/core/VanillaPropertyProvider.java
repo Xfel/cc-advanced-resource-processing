@@ -16,6 +16,7 @@ import com.google.common.collect.Multimap;
 
 import net.minecraft.src.Block;
 import net.minecraft.src.BlockCloth;
+import net.minecraft.src.BlockFlowing;
 import net.minecraft.src.Enchantment;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemDye;
