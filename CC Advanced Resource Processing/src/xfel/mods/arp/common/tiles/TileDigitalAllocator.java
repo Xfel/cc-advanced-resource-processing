@@ -12,32 +12,26 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Random;
 
-import net.minecraft.src.Entity;
-import net.minecraft.src.EntityItem;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.IInventory;
-import net.minecraft.src.InventoryBasic;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.NBTTagList;
-import net.minecraft.src.TileEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import xfel.mods.arp.base.blocks.TileOrientable;
 import xfel.mods.arp.base.utils.InventoryTools;
 import xfel.mods.arp.base.utils.WorldCoordinate;
 import xfel.mods.arp.common.AdvancedResourceProcessing;
 import xfel.mods.arp.common.CommonProxy;
-
 import buildcraft.api.inventory.ISpecialInventory;
 import buildcraft.api.transport.IPipeConnection;
 import buildcraft.api.transport.IPipeEntry;
-import buildcraft.api.transport.IPipedItem;
-
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
-
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileDigitalAllocator extends TileOrientable implements
 		ISpecialInventory, IPipeConnection {
@@ -482,7 +476,7 @@ public class TileDigitalAllocator extends TileOrientable implements
 									stack.getItemDamage()));
 
 					if (stack.hasTagCompound()) {
-						droppedEntity.item
+						droppedEntity.func_92014_d()
 								.setTagCompound((NBTTagCompound) stack
 										.getTagCompound().copy());
 					}
@@ -502,11 +496,11 @@ public class TileDigitalAllocator extends TileOrientable implements
 		if (entity instanceof EntityItem && isOpen()) {
 			EntityItem item = (EntityItem) entity;
 
-			if (!isAcceptedItem(item.item)) {
+			if (!isAcceptedItem(item.func_92014_d())) {
 				return;
 			}
 
-			if (offer(item.item, true) == item.item.stackSize)
+			if (offer(item.func_92014_d(), true) == item.func_92014_d().stackSize)
 				item.setDead();
 		}
 	}

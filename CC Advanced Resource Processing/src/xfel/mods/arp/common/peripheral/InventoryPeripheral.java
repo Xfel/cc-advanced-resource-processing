@@ -9,14 +9,10 @@ package xfel.mods.arp.common.peripheral;
 
 import java.util.Map;
 
-import org.objectweb.asm.tree.analysis.SourceInterpreter;
-
-import cpw.mods.fml.common.registry.LanguageRegistry;
-
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.StringTranslate;
 import xfel.mods.arp.base.peripheral.bind.PeripheralMethod;
-import net.minecraft.src.IInventory;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.StringTranslate;
 
 public class InventoryPeripheral extends DatabasePeripheral {
 
@@ -95,19 +91,30 @@ public class InventoryPeripheral extends DatabasePeripheral {
 
 	@PeripheralMethod
 	public void swap(String key1, int slot1, String key2, int slot2) {
-		IInventory inv1 = getInventory(key1);
-		slot1 = checkSlot(inv1, slot1);
+		final IInventory inv1 = getInventory(key1);
+		final int checkedSlot1 = checkSlot(inv1, slot1);
 
-		IInventory inv2 = getInventory(key2);
-		slot2 = checkSlot(inv2, slot2);
+		final IInventory inv2 = getInventory(key2);
+		final int checkedSlot2 = checkSlot(inv2, slot2);
 
 		if (inv1 == inv2 && slot1 == slot2)
 			return;
 
+		queueTask(new Task() {
+			
+			@Override
+			protected Object[] execute() throws Exception {
+				ItemStack stack1 = inv1.getStackInSlot(checkedSlot1);
+				inv1.setInventorySlotContents(checkedSlot1, inv2.getStackInSlot(checkedSlot2));
+				inv2.setInventorySlotContents(checkedSlot2, stack1);
+				return null;
+			}
+		});
+		
 		// TODO extract to make thread-safe
-		ItemStack stack1 = inv1.getStackInSlot(slot1);
-		inv1.setInventorySlotContents(slot1, inv2.getStackInSlot(slot2));
-		inv2.setInventorySlotContents(slot2, stack1);
+//		ItemStack stack1 = inv1.getStackInSlot(slot1);
+//		inv1.setInventorySlotContents(slot1, inv2.getStackInSlot(slot2));
+//		inv2.setInventorySlotContents(slot2, stack1);
 	}
 
 	@PeripheralMethod

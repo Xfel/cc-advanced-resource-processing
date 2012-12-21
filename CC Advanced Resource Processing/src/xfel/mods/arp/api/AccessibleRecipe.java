@@ -7,9 +7,9 @@
  */
 package xfel.mods.arp.api;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.ShapedRecipes;
 import cpw.mods.fml.relauncher.ReflectionHelper;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.ShapedRecipes;
 
 public class AccessibleRecipe {
 

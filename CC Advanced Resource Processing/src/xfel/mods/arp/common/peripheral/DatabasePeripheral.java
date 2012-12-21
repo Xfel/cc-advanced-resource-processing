@@ -7,14 +7,8 @@
  */
 package xfel.mods.arp.common.peripheral;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import dan200.computer.api.IPeripheral;
 
 import xfel.mods.arp.api.ItemKey;
 import xfel.mods.arp.api.RecipeType;

@@ -10,15 +10,18 @@ package xfel.mods.arp.base.peripheral;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import net.minecraft.nbt.NBTTagCompound;
+
 import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.IHostedPeripheral;
 import dan200.computer.api.IPeripheral;
-import dan200.turtle.api.ITurtlePeripheral;
 
 /**
  * Abstract implementation of {@link IPeripheral} and {@link ITurtlePeripheral}.
@@ -26,7 +29,7 @@ import dan200.turtle.api.ITurtlePeripheral;
  * @author Xfel
  * 
  */
-public abstract class AbstractPeripheral implements ITurtlePeripheral {
+public abstract class AbstractPeripheral implements IHostedPeripheral {
 
 	/**
 	 * A task which is started by a peripheral method, but should be executed on
@@ -60,7 +63,6 @@ public abstract class AbstractPeripheral implements ITurtlePeripheral {
 	 */
 	protected static abstract class Task {
 		int id;
-		IComputerAccess computer;
 
 		/**
 		 * Default constructor
@@ -78,16 +80,6 @@ public abstract class AbstractPeripheral implements ITurtlePeripheral {
 		}
 
 		/**
-		 * Returns the computer that requested this task and will therefore
-		 * recieve the results.
-		 * 
-		 * @return the owning computer
-		 */
-		protected final IComputerAccess getComputer() {
-			return computer;
-		}
-
-		/**
 		 * Implement your task in this method. return values and exceptions are
 		 * treated like in
 		 * {@link IPeripheral#callMethod(IComputerAccess, int, Object[])}
@@ -100,7 +92,7 @@ public abstract class AbstractPeripheral implements ITurtlePeripheral {
 		protected abstract Object[] execute() throws Exception;
 
 		// executes the task and posts a result event
-		void doExecute() {
+		void doExecute(AbstractPeripheral peripheral) {
 			try {
 				Object[] result = execute();
 
@@ -116,11 +108,11 @@ public abstract class AbstractPeripheral implements ITurtlePeripheral {
 					eventParams[2] = table;
 				}
 
-				computer.queueEvent("task_result", eventParams);
+				peripheral.queueEvent("task_result", eventParams);
 			} catch (Exception e) {
 				Object[] eventParams = { Integer.valueOf(id), Boolean.FALSE,
 						e.getMessage() };
-				computer.queueEvent("task_result", eventParams);
+				peripheral.queueEvent("task_result", eventParams);
 			}
 		}
 	}
@@ -191,7 +183,7 @@ public abstract class AbstractPeripheral implements ITurtlePeripheral {
 		return null;
 	}
 
-	private Map<IComputerAccess, String> attachedComputers;
+	private Set<IComputerAccess> attachedComputers;
 
 	/**
 	 * The peripheral type name
@@ -200,11 +192,11 @@ public abstract class AbstractPeripheral implements ITurtlePeripheral {
 
 	protected AbstractPeripheral(String type) {
 		this.type = type;
-		attachedComputers = new HashMap<IComputerAccess, String>();
+		attachedComputers = new HashSet<IComputerAccess>();
 	}
 
 	protected AbstractPeripheral() {
-		attachedComputers = new HashMap<IComputerAccess, String>();
+		attachedComputers = new HashSet<IComputerAccess>();
 	}
 
 	/**
@@ -218,8 +210,8 @@ public abstract class AbstractPeripheral implements ITurtlePeripheral {
 	}
 
 	@Override
-	public void attach(IComputerAccess computer, String computerSide) {
-		attachedComputers.put(computer, computerSide);
+	public void attach(IComputerAccess computer) {
+		attachedComputers.add(computer);
 	}
 
 	@Override
@@ -235,7 +227,7 @@ public abstract class AbstractPeripheral implements ITurtlePeripheral {
 	 * @see #detach(IComputerAccess)
 	 */
 	public Collection<IComputerAccess> getAttachedComputers() {
-		return new ArrayList<IComputerAccess>(attachedComputers.keySet());
+		return new ArrayList<IComputerAccess>(attachedComputers);
 	}
 
 	/**
@@ -248,7 +240,7 @@ public abstract class AbstractPeripheral implements ITurtlePeripheral {
 	 * @see IComputerAccess#queueEvent(String, Object[])
 	 */
 	protected void queueEvent(String event, Object... args) {
-		for (IComputerAccess computer : attachedComputers.keySet()) {
+		for (IComputerAccess computer : attachedComputers) {
 			computer.queueEvent(event, args);
 		}
 	}
@@ -267,10 +259,10 @@ public abstract class AbstractPeripheral implements ITurtlePeripheral {
 		Object[] sidedArgs = new Object[args.length + 1];
 		System.arraycopy(args, 0, sidedArgs, 1, args.length);
 
-		for (Map.Entry<IComputerAccess, String> entry : attachedComputers
-				.entrySet()) {
-			sidedArgs[0] = entry.getValue();
-			entry.getKey().queueEvent(event, sidedArgs);
+		for (IComputerAccess computer : attachedComputers
+				) {
+			sidedArgs[0] = computer.getAttachmentSide();
+			computer.queueEvent(event, sidedArgs);
 		}
 	}
 
@@ -287,9 +279,8 @@ public abstract class AbstractPeripheral implements ITurtlePeripheral {
 
 	private Queue<Task> taskQueue = new LinkedList<Task>();
 
-	protected int queueTask(IComputerAccess computer, Task task) {
+	protected int queueTask(Task task) {
 		int taskId = task.id = taskIds.incrementAndGet();
-		task.computer = computer;
 		synchronized (taskQueue) {
 			taskQueue.add(task);
 		}
@@ -303,7 +294,19 @@ public abstract class AbstractPeripheral implements ITurtlePeripheral {
 			task = taskQueue.poll();
 		}
 		if (task != null) {
-			task.doExecute();
+			task.doExecute(this);
 		}
+	}
+	
+	@Override
+	public void readFromNBT(NBTTagCompound nbttagcompound) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void writeToNBT(NBTTagCompound nbttagcompound) {
+		// TODO Auto-generated method stub
+		
 	}
 }

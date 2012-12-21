@@ -7,7 +7,6 @@
  */
 package xfel.mods.arp.api;
 
-import net.minecraft.src.ItemStack;
 
 /**
  * @author Xfel

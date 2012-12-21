@@ -7,26 +7,21 @@
  */
 package xfel.mods.arp.core;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.Multimap;
-
-import net.minecraft.src.Block;
-import net.minecraft.src.BlockCloth;
-import net.minecraft.src.BlockFlowing;
-import net.minecraft.src.Enchantment;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemDye;
-import net.minecraft.src.ItemFood;
-import net.minecraft.src.ItemMap;
-import net.minecraft.src.ItemMapBase;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.NBTTagList;
-import net.minecraft.src.StatCollector;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockCloth;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemDye;
+import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemMapBase;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.oredict.OreDictionary;

@@ -97,7 +97,7 @@ public abstract class AbstractAnnotatedPeripheral extends AbstractPeripheral {
 		final Method method = bindingData.methods[methodIndex];
 		
 		if(bindingData.async[methodIndex]){
-			return new Object[]{queueTask(computer, new Task() {
+			return new Object[]{queueTask(new Task() {
 				
 				@Override
 				protected Object[] execute() throws Exception {
@@ -218,7 +218,7 @@ public abstract class AbstractAnnotatedPeripheral extends AbstractPeripheral {
 			Annotation[] annotations, Class<A> type) {
 		for (Annotation annotation : annotations) {
 			if (type.isInstance(annotation))
-				return (A) annotation;
+				return type.cast(annotation);
 		}
 
 		return null;

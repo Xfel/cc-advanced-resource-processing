@@ -6,10 +6,10 @@
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */package xfel.mods.arp.common.blocks;
 
-import net.minecraft.src.CreativeTabs;
-import net.minecraft.src.Material;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.World;
+import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import xfel.mods.arp.base.blocks.BlockExtended;
 import xfel.mods.arp.common.tiles.TileDigitalChest;
 

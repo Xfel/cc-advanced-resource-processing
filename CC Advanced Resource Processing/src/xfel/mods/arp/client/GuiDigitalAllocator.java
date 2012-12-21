@@ -7,18 +7,16 @@
  */
 package xfel.mods.arp.client;
 
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.util.StatCollector;
 
-import cpw.mods.fml.common.network.PacketDispatcher;
+import org.lwjgl.opengl.GL11;
 
 import xfel.mods.arp.common.container.ContainerDigitalAllocator;
 import xfel.mods.arp.common.tiles.TileDigitalAllocator;
-
-import net.minecraft.src.Container;
-import net.minecraft.src.GuiButton;
-import net.minecraft.src.GuiContainer;
-import net.minecraft.src.IInventory;
-import net.minecraft.src.StatCollector;
+import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class GuiDigitalAllocator extends GuiContainer {
 

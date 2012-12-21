@@ -7,25 +7,19 @@
  */
 package xfel.mods.arp.common.turtle;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
-import java.util.logging.Level;
 
-import cpw.mods.fml.relauncher.ReflectionHelper;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.ForgeDirection;
 import xfel.mods.arp.api.ItemKey;
-import xfel.mods.arp.base.blocks.TileOrientable;
 import xfel.mods.arp.base.peripheral.bind.PeripheralMethod;
 import xfel.mods.arp.base.utils.WorldCoordinate;
 import xfel.mods.arp.common.AdvancedResourceProcessing;
 import xfel.mods.arp.common.CommonProxy;
 import xfel.mods.arp.common.blocks.BlockAdvancedMachine;
 import xfel.mods.arp.common.peripheral.InventoryPeripheral;
-import net.minecraft.src.Block;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemStack;
-import net.minecraftforge.common.ForgeDirection;
+import dan200.computer.api.IHostedPeripheral;
 import dan200.turtle.api.ITurtleAccess;
-import dan200.turtle.api.ITurtlePeripheral;
 import dan200.turtle.api.ITurtleUpgrade;
 import dan200.turtle.api.TurtleSide;
 import dan200.turtle.api.TurtleUpgradeType;
@@ -134,7 +128,7 @@ public class TurtleARP implements ITurtleUpgrade {
 	}
 
 	@Override
-	public ITurtlePeripheral createPeripheral(ITurtleAccess turtle,
+	public IHostedPeripheral createPeripheral(ITurtleAccess turtle,
 			TurtleSide side) {
 		return new Peripheral(turtle);
 	}

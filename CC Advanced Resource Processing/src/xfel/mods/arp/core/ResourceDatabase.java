@@ -8,14 +8,13 @@
 package xfel.mods.arp.core;
 
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.StringTranslate;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.StringTranslate;
 import xfel.mods.arp.api.DatabaseAPI;
 import xfel.mods.arp.api.ItemKey;
 import xfel.mods.arp.common.AdvancedResourceProcessing;
@@ -24,7 +23,6 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 
 /**
  * @author Xfel

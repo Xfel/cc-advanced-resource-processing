@@ -9,7 +9,7 @@ package xfel.mods.arp.api;
 
 import java.util.Map;
 
-import net.minecraft.src.ItemStack;
+import net.minecraft.item.ItemStack;
 
 /**
  * @author Xfel

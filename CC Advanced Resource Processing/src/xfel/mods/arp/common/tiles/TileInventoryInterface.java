@@ -6,17 +6,14 @@
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */package xfel.mods.arp.common.tiles;
 
-import java.util.Collection;
-import java.util.Collections;
-
-import net.minecraft.src.IInventory;
+import net.minecraft.inventory.IInventory;
 import xfel.mods.arp.base.blocks.TileOrientable;
 import xfel.mods.arp.base.utils.InventoryTools;
 import xfel.mods.arp.base.utils.WorldCoordinate;
 import xfel.mods.arp.common.peripheral.InventoryPeripheral;
 import xfel.mods.arp.common.peripheral.InventoryPeripheral.IInventoryProvider;
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
@@ -52,8 +49,8 @@ public class TileInventoryInterface extends TileOrientable implements
 		return peripheral.canAttachToSide(side);
 	}
 
-	public void attach(IComputerAccess computer, String computerSide) {
-		peripheral.attach(computer, computerSide);
+	public void attach(IComputerAccess computer) {
+		peripheral.attach(computer);
 	}
 
 	public void detach(IComputerAccess computer) {

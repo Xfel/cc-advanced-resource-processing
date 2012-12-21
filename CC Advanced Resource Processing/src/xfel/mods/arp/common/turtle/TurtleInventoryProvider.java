@@ -7,15 +7,15 @@
  */
 package xfel.mods.arp.common.turtle;
 
-import dan200.turtle.api.ITurtleAccess;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.IInventory;
-import net.minecraft.src.ItemStack;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
+import xfel.mods.arp.base.blocks.TileOrientable;
 import xfel.mods.arp.base.utils.InventoryTools;
 import xfel.mods.arp.base.utils.WorldCoordinate;
-import xfel.mods.arp.base.blocks.TileOrientable;
 import xfel.mods.arp.common.peripheral.InventoryPeripheral;
+import dan200.turtle.api.ITurtleAccess;
 
 public class TurtleInventoryProvider implements
 		InventoryPeripheral.IInventoryProvider {

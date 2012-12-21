@@ -7,8 +7,8 @@
  */
 package xfel.mods.arp.common.blocks;
 
-import net.minecraft.src.CreativeTabs;
-import net.minecraft.src.Material;
+import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
 import xfel.mods.arp.base.blocks.BlockSubtypes;
 import xfel.mods.arp.common.tiles.TileDatabase;
 import xfel.mods.arp.common.tiles.TileDigitalAllocator;

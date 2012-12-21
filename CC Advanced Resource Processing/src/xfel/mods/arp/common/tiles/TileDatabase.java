@@ -8,8 +8,8 @@
 
 import xfel.mods.arp.base.blocks.TileExtended;
 import xfel.mods.arp.common.peripheral.DatabasePeripheral;
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
@@ -29,8 +29,8 @@ public class TileDatabase extends TileExtended implements IPeripheral {
 		return peripheral.getType();
 	}
 
-	public void attach(IComputerAccess computer, String computerSide) {
-		peripheral.attach(computer, computerSide);
+	public void attach(IComputerAccess computer) {
+		peripheral.attach(computer);
 	}
 
 	public final String[] getMethodNames() {

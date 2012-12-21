@@ -11,15 +11,13 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.util.MathHelper;
+import net.minecraftforge.common.ForgeDirection;
 import xfel.mods.arp.common.network.INetworkedTile;
 import xfel.mods.arp.common.network.NetworkHandler;
-import net.minecraft.src.BlockPistonBase;
-import net.minecraft.src.EntityLiving;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.MathHelper;
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.Packet;
-import net.minecraftforge.common.ForgeDirection;
 
 public class TileOrientable extends TileExtended implements INetworkedTile {
 

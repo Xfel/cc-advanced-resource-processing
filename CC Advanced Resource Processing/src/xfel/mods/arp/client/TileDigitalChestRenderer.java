@@ -7,17 +7,17 @@
  */
 package xfel.mods.arp.client;
 
+import net.minecraft.client.model.ModelChest;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.client.IItemRenderer;
+import net.minecraftforge.common.ForgeDirection;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import xfel.mods.arp.common.tiles.TileDigitalChest;
-
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.ModelChest;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.TileEntitySpecialRenderer;
-import net.minecraftforge.client.IItemRenderer;
-import net.minecraftforge.common.ForgeDirection;
 
 public class TileDigitalChestRenderer extends TileEntitySpecialRenderer
 		implements IItemRenderer {

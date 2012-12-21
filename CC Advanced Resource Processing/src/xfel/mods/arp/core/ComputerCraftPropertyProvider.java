@@ -7,23 +7,15 @@
  */
 package xfel.mods.arp.core;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Hashtable;
 import java.util.Map;
 
-import dan200.CCTurtle;
-import dan200.computer.shared.ItemComputerBase;
-import dan200.turtle.api.ITurtleUpgrade;
-import dan200.turtle.shared.ItemTurtle;
-import dan200.turtle.shared.TurtleAPI;
-
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemBlock;
-import net.minecraft.src.ItemStack;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import xfel.mods.arp.api.IItemPropertyProvider;
 import xfel.mods.arp.api.IItemStackPropertyProvider;
 import xfel.mods.arp.api.ItemKey;
+import dan200.turtle.api.ITurtleUpgrade;
 
 public class ComputerCraftPropertyProvider implements IItemPropertyProvider,
 		IItemStackPropertyProvider {

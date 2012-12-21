@@ -9,9 +9,9 @@ package xfel.mods.arp.common;
 
 import java.util.logging.Logger;
 
-import net.minecraft.src.Block;
-import net.minecraft.src.Item;
-import net.minecraft.src.ItemStack;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import xfel.mods.arp.base.blocks.ItemBlockSubtypes;
 import xfel.mods.arp.base.peripheral.RomInjector;
@@ -19,7 +19,6 @@ import xfel.mods.arp.common.blocks.BlockAdvancedMachine;
 import xfel.mods.arp.common.blocks.BlockDigitalChest;
 import xfel.mods.arp.common.network.NetworkHandler;
 import xfel.mods.arp.common.tiles.TileDatabase;
-import xfel.mods.arp.common.tiles.TileDigitalAllocator;
 import xfel.mods.arp.common.tiles.TileDigitalChest;
 import xfel.mods.arp.common.tiles.TileInventoryInterface;
 import xfel.mods.arp.common.turtle.TurtleARP;

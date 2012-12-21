@@ -6,16 +6,14 @@
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */package xfel.mods.arp.common.tiles;
 
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.Random;
 
-import net.minecraft.src.EntityItem;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.IInventory;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NBTTagCompound;
-import net.minecraft.src.NBTTagList;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.ForgeDirection;
 import xfel.mods.arp.base.blocks.TileOrientable;
 import xfel.mods.arp.base.utils.InventoryTools;
@@ -23,8 +21,8 @@ import xfel.mods.arp.base.utils.WorldCoordinate;
 import xfel.mods.arp.common.AdvancedResourceProcessing;
 import xfel.mods.arp.common.peripheral.InventoryPeripheral;
 import xfel.mods.arp.common.peripheral.InventoryPeripheral.IInventoryProvider;
-import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.asm.SideOnly;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
@@ -88,8 +86,8 @@ public class TileDigitalChest extends TileOrientable implements IPeripheral,
 		return peripheral.canAttachToSide(side);
 	}
 
-	public void attach(IComputerAccess computer, String computerSide) {
-		peripheral.attach(computer, computerSide);
+	public void attach(IComputerAccess computer) {
+		peripheral.attach(computer);
 	}
 
 	public void detach(IComputerAccess computer) {
@@ -251,7 +249,7 @@ public class TileDigitalChest extends TileOrientable implements IPeripheral,
 									stack.getItemDamage()));
 
 					if (stack.hasTagCompound()) {
-						droppedEntity.item
+						droppedEntity.func_92014_d()
 								.setTagCompound((NBTTagCompound) stack
 										.getTagCompound().copy());
 					}
