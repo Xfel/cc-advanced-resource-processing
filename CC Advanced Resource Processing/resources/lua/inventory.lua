@@ -98,7 +98,22 @@ function swap(_inv1, _slot1, _inv2, _slot2)
 		assert(_inv1.side == _inv2.side, "Can't modify inventories from different peripherals")
 	end
 
-	return peripheral.call(_inv1.side, "swapStacks", _inv1.key, _slot1, _inv2.key, _slot2)
+	local taskId = peripheral.call(_inv1.side, "swapStacks", _inv1.key, _slot1, _inv2.key, _slot2)
+	if taskId~=-1 then
+
+		local evt, id, success, param
+		while id ~= taskId do
+			evt, id, success, param = os.pullEvent("task_result")
+		end
+
+		if success then
+			if param then
+				return unpack(param)
+			end
+		else
+			error(param)
+		end
+	end
 end
 
 function move(amount, _inv1, _slot1, _inv2, _slot2)
@@ -111,7 +126,23 @@ function move(amount, _inv1, _slot1, _inv2, _slot2)
 		assert(_inv1.side == _inv2.side, "Can't modify inventories from different peripherals")
 	end
 
-	return peripheral.call(_inv1.side, "splitStack", _inv1.key, _slot1, _inv2.key, _slot2, amount)
+	local taskId = peripheral.call(_inv1.side, "splitStack", _inv1.key, _slot1, _inv2.key, _slot2, amount)
+
+	if taskId~=-1 then
+
+		local evt, id, success, param
+		while id ~= taskId do
+			evt, id, success, param = os.pullEvent("task_result")
+		end
+
+		if success then
+			if param then
+				return unpack(param)
+			end
+		else
+			error(param)
+		end
+	end
 end
 
 function isPresent(_side, _key)
@@ -157,7 +188,7 @@ inv_mt.__index = function(t, i)
 	assert(inventory.isPresent(t.side), "Invalid Inventory")
 	if type(i) == "number" then
 		local stack = peripheral.call(t.side, "getInventorySlot", t.key, i)
-		
+
 		if stack then
 			stack.inventory = t;
 			stack.slot = i

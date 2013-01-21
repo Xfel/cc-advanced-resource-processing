@@ -15,7 +15,10 @@ import net.minecraft.item.ItemStack;
 import xfel.mods.arp.api.IItemPropertyProvider;
 import xfel.mods.arp.api.IItemStackPropertyProvider;
 import xfel.mods.arp.api.ItemKey;
+import dan200.CCTurtle;
+import dan200.computer.shared.ItemComputerBase;
 import dan200.turtle.api.ITurtleUpgrade;
+import dan200.turtle.shared.ItemTurtle;
 
 public class ComputerCraftPropertyProvider implements IItemPropertyProvider,
 		IItemStackPropertyProvider {

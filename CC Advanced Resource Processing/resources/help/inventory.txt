@@ -1,4 +1,3 @@
-version @arp.version@
 Inventory reader
 
 Functions:

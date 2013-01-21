@@ -1,4 +1,3 @@
-version @arp.version@
 Digital Allocator
 
 Functions:

@@ -134,6 +134,7 @@ public class ResourceDatabase extends DatabaseAPI {
 	private void lookupItemsCreative() {
 		AdvancedResourceProcessing.MOD_LOGGER.log(Level.INFO,
 				"Performing item lookup using creative tabs");
+		// might still not find all redpower items...
 		List<ItemStack> items = new ArrayList<ItemStack>();
 
 		for (int i = 0; i < Item.itemsList.length; i++) {

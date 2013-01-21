@@ -48,14 +48,15 @@ public class InventoryPeripheral extends DatabasePeripheral {
 
 		return inventory.getSizeInventory();
 	}
-	
+
 	@PeripheralMethod
 	public String getInventoryName(String key) {
 		IInventory inventory = getInventory(key);
 		if (inventory == null)
 			throw new IllegalArgumentException("Invalid inventory");
 
-		return StringTranslate.getInstance().translateKey(inventory.getInvName());
+		return StringTranslate.getInstance().translateKey(
+				inventory.getInvName());
 	}
 
 	@PeripheralMethod
@@ -74,8 +75,9 @@ public class InventoryPeripheral extends DatabasePeripheral {
 
 		ItemStack stack = inventory.getStackInSlot(slot);
 
-		if(stack==null)return null;
-		
+		if (stack == null)
+			return null;
+
 		return database.getItemStackProperties(stack);
 	}
 
@@ -90,7 +92,7 @@ public class InventoryPeripheral extends DatabasePeripheral {
 	}
 
 	@PeripheralMethod
-	public void swap(String key1, int slot1, String key2, int slot2) {
+	public int swap(String key1, int slot1, String key2, int slot2) {
 		final IInventory inv1 = getInventory(key1);
 		final int checkedSlot1 = checkSlot(inv1, slot1);
 
@@ -98,66 +100,82 @@ public class InventoryPeripheral extends DatabasePeripheral {
 		final int checkedSlot2 = checkSlot(inv2, slot2);
 
 		if (inv1 == inv2 && slot1 == slot2)
-			return;
+			return -1;
 
-		queueTask(new Task() {
-			
+		return queueTask(new Task() {
+
 			@Override
 			protected Object[] execute() throws Exception {
 				ItemStack stack1 = inv1.getStackInSlot(checkedSlot1);
-				inv1.setInventorySlotContents(checkedSlot1, inv2.getStackInSlot(checkedSlot2));
+				inv1.setInventorySlotContents(checkedSlot1,
+						inv2.getStackInSlot(checkedSlot2));
 				inv2.setInventorySlotContents(checkedSlot2, stack1);
-				return null;
+				return new Object[0];
 			}
 		});
-		
+
 		// TODO extract to make thread-safe
-//		ItemStack stack1 = inv1.getStackInSlot(slot1);
-//		inv1.setInventorySlotContents(slot1, inv2.getStackInSlot(slot2));
-//		inv2.setInventorySlotContents(slot2, stack1);
+		// ItemStack stack1 = inv1.getStackInSlot(slot1);
+		// inv1.setInventorySlotContents(slot1, inv2.getStackInSlot(slot2));
+		// inv2.setInventorySlotContents(slot2, stack1);
 	}
 
 	@PeripheralMethod
 	public int move(String sourceKey, int sourceSlot, String targetKey,
-			int targetSlot, int amount) {
-		if(amount<=0)return 0;
-		
-		IInventory source = getInventory(sourceKey);
-		sourceSlot = checkSlot(source, sourceSlot);
+			int targetSlot, final int amount) {
+		if (amount <= 0)
+			return -1;
 
-		IInventory target = getInventory(targetKey);
-		targetSlot = checkSlot(target, targetSlot);
+		final IInventory source = getInventory(sourceKey);
+		final int checkedSourceSlot = checkSlot(source, sourceSlot);
+
+		final IInventory target = getInventory(targetKey);
+		final int checkedTargetSlot = checkSlot(target, targetSlot);
 
 		if (source == target && sourceSlot == targetSlot)
-			return 0;
+			return -1;
 
-		// TODO extract to make thread-safe
-		ItemStack sourceStack = source.getStackInSlot(sourceSlot);
-		if (sourceStack == null)
-			return 0;
-		ItemStack targetStack = target.getStackInSlot(targetSlot);
+		return queueTask(new Task() {
 
-		int moveAmount;
-		if (targetStack == null) {
-			moveAmount = Math.min(amount, Math.min(
-					target.getInventoryStackLimit(), sourceStack.stackSize));
+			@Override
+			protected Object[] execute() throws Exception {
 
-			targetStack = source.decrStackSize(sourceSlot, moveAmount);
-			target.setInventorySlotContents(targetSlot, targetStack);
-		} else if (targetStack.isItemEqual(sourceStack)) {
-			moveAmount = Math.min(
-					Math.min(amount, sourceStack.stackSize),
-					Math.min(target.getInventoryStackLimit(),
-							targetStack.getMaxStackSize())
-							- targetStack.stackSize);
-			source.decrStackSize(sourceSlot, moveAmount);
-			targetStack.stackSize+=moveAmount;
-			target.onInventoryChanged();
-		}else{
-			throw new IllegalArgumentException("Can't merge the given item stacks");
-		}
-		
-		return moveAmount;
+				// TODO extract to make thread-safe
+				ItemStack sourceStack = source
+						.getStackInSlot(checkedSourceSlot);
+				if (sourceStack == null)
+					return new Object[]{0};
+				ItemStack targetStack = target
+						.getStackInSlot(checkedTargetSlot);
+
+				int moveAmount;
+				if (targetStack == null) {
+					moveAmount = Math.min(amount, Math.min(
+							target.getInventoryStackLimit(),
+							sourceStack.stackSize));
+
+					targetStack = source.decrStackSize(checkedSourceSlot,
+							moveAmount);
+					target.setInventorySlotContents(checkedTargetSlot,
+							targetStack);
+				} else if (targetStack.isItemEqual(sourceStack)) {
+					moveAmount = Math.min(
+							Math.min(amount, sourceStack.stackSize),
+							Math.min(target.getInventoryStackLimit(),
+									targetStack.getMaxStackSize())
+									- targetStack.stackSize);
+					source.decrStackSize(checkedSourceSlot, moveAmount);
+					targetStack.stackSize += moveAmount;
+					target.onInventoryChanged();
+				} else {
+					throw new IllegalArgumentException(
+							"Can't merge the given item stacks");
+				}
+
+				return new Object[] { moveAmount };
+			}
+		});
+
 	}
 
 	public void onInventoryChanged() {

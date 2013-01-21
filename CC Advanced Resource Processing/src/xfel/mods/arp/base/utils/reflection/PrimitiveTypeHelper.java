@@ -101,6 +101,9 @@ class BooleanHelper extends PrimitiveTypeHelper {
 
 	@Override
 	protected Object doConvertToType(Object obj) {
+		if(obj==null){
+			return Boolean.FALSE;
+		}
 		return (Boolean) obj;
 	}
 

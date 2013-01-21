@@ -223,7 +223,7 @@ public abstract class AbstractPeripheral implements IHostedPeripheral {
 	 * Returns a list of all currently attached computers.
 	 * 
 	 * @return the computer list
-	 * @see #attach(IComputerAccess, String)
+	 * @see #attach(IComputerAccess)
 	 * @see #detach(IComputerAccess)
 	 */
 	public Collection<IComputerAccess> getAttachedComputers() {
@@ -259,10 +259,9 @@ public abstract class AbstractPeripheral implements IHostedPeripheral {
 		Object[] sidedArgs = new Object[args.length + 1];
 		System.arraycopy(args, 0, sidedArgs, 1, args.length);
 
-		for (IComputerAccess computer : attachedComputers
-				) {
+		for (IComputerAccess computer : attachedComputers) {
 			sidedArgs[0] = computer.getAttachmentSide();
-			computer.queueEvent(event, sidedArgs);
+			computer.queueEvent(event, sidedArgs.clone());
 		}
 	}
 
@@ -275,7 +274,7 @@ public abstract class AbstractPeripheral implements IHostedPeripheral {
 		return true;
 	}
 
-	private final AtomicInteger taskIds = new AtomicInteger();
+	private static final AtomicInteger taskIds = new AtomicInteger();
 
 	private Queue<Task> taskQueue = new LinkedList<Task>();
 
@@ -297,16 +296,16 @@ public abstract class AbstractPeripheral implements IHostedPeripheral {
 			task.doExecute(this);
 		}
 	}
-	
+
 	@Override
 	public void readFromNBT(NBTTagCompound nbttagcompound) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	@Override
 	public void writeToNBT(NBTTagCompound nbttagcompound) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

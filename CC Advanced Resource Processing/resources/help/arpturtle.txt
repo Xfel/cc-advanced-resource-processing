@@ -1,4 +1,3 @@
-version @arp.version@
 ARP Turtle additional functions
 
 arpturtle.getInventory(side)

@@ -47,7 +47,7 @@ import dan200.turtle.api.TurtleAPI;
  * @author Xfel
  * 
  */
-@Mod(modid = "ccarp", name = AdvancedResourceProcessing.MOD_VERSION, version = "@mod.version@", useMetadata = false)
+@Mod(modid = "ccarp", name = "ComputerCraft Advanced Resource Processing", version = "@mod.version@", useMetadata = false)
 @NetworkMod(clientSideRequired = true, serverSideRequired = false, packetHandler = NetworkHandler.class, channels = { NetworkHandler.TILE_UPDATE_CHANNEL })
 public class AdvancedResourceProcessing {
 
@@ -86,10 +86,10 @@ public class AdvancedResourceProcessing {
 		config.load();
 		
 		blockAdvancedMachine=new BlockAdvancedMachine(config.getBlock("advancedmachine", 2040).getInt());
-		GameRegistry.registerBlock(blockAdvancedMachine, ItemBlockSubtypes.class);
+		GameRegistry.registerBlock(blockAdvancedMachine, ItemBlockSubtypes.class,"CC-ARP-GeneralMachine");
 
 		blockDigitalChest=new BlockDigitalChest(config.getBlock("digitalchest", 2041).getInt());
-		GameRegistry.registerBlock(blockDigitalChest);
+		GameRegistry.registerBlock(blockDigitalChest, "CC-ARP-DigitalChest");
 		
 		config.save();
 	}
@@ -158,6 +158,9 @@ public class AdvancedResourceProcessing {
 		RomInjector.injectClasspathFile("apis/inventory", "lua/inventory.lua", MOD_VERSION);
 		RomInjector.injectClasspathFile("help/inventory", "help/inventory.txt", MOD_VERSION);
 		RomInjector.injectClasspathFile("programs/inventory-dump", "lua/dumpinv.lua", MOD_VERSION);
+		
+		RomInjector.injectClasspathFile("apis/turtle/arpturtle", "lua/arpturtle.lua", MOD_VERSION);
+		RomInjector.injectClasspathFile("help/arpturtle", "help/arpturtle.txt", MOD_VERSION);
 		
 		ResourceDatabase.instance().load();
 	}
