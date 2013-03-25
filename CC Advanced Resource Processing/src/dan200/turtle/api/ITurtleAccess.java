@@ -1,3 +1,8 @@
+/**
+ * This file is part of the public ComputerCraft API - http://www.computercraft.info
+ * Copyright Daniel Ratcliffe, 2011-2013. This API may be redistributed unmodified and in full only.
+ * For help using the API, and posting your mods, visit the forums at computercraft.info.
+ */
 
 package dan200.turtle.api;
 import dan200.computer.api.*;
@@ -19,6 +24,14 @@ public interface ITurtleAccess
 	 * @return a vector containing the integer block co-ordinates at which the turtle resides.
 	 */
 	public net.minecraft.util.Vec3 getPosition();
+
+	/**
+	 * Returns a vector containing the co-ordinates at which the turtle is rendered.
+	 * This will shift when the turtle is moving.
+	 * @param f The subframe fraction
+	 * @return a vector containing the integer block co-ordinates at which the turtle resides.
+	 */
+	public net.minecraft.util.Vec3 getVisualPosition( float f );
 
 	/**
 	 * Returns the world direction the turtle is currently facing.

@@ -1,5 +1,11 @@
+/**
+ * This file is part of the public ComputerCraft API - http://www.computercraft.info
+ * Copyright Daniel Ratcliffe, 2011-2013. This API may be redistributed unmodified and in full only.
+ * For help using the API, and posting your mods, visit the forums at computercraft.info.
+ */
 
 package dan200.turtle.api;
+import net.minecraft.util.Icon;
 import dan200.computer.api.*;
 
 /**
@@ -47,28 +53,6 @@ public interface ITurtleUpgrade
 	public boolean isSecret();
 	
 	/**
-	 * Return which texture file should be used to render this upgrade when rendering a turtle
-	 * in the world or as an item.
-	 * @param turtle Access to the turtle that is being rendered, this will be null when
-	 * the method is being called to render the turtle as an Item. For turtles in the world,
-	 * this can be used to have the upgrade change appearance based on state.
-	 * @param side Which side of the turtle (left or right) that the upgrade being rendered resides on.
-	 * @see #getIconIndex
-	 */		
-	public String getIconTexture( ITurtleAccess turtle, TurtleSide side );
-	
-	/**
-	 * Return which icon index should be used to render this upgrade when rendering a turtle
-	 * in the world or as an item.
-	 * @param turtle Access to the turtle that is being rendered, this will be null when
-	 * the method is being called to render the turtle as an Item. For turtles in the world,
-	 * this can be used to have the upgrade change appearance based on state.
-	 * @param side Which side of the turtle (left or right) that the upgrade being rendered resides on.
-	 * @see #getIconTexture
-	 */		
-	public int getIconIndex( ITurtleAccess turtle, TurtleSide side );
-	
-	/**
 	 * Will only be called for Peripheral upgrades. Creates a peripheral for a turtle
 	 * being placed using this upgrade. The peripheral created will be stored
 	 * for the lifetime of the turtle, will have update() called once-per-tick, and will be
@@ -95,4 +79,14 @@ public interface ITurtleUpgrade
 	 * and this method is not expected to be called.
 	 */
 	public boolean useTool( ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, int direction );
+
+	/**
+	 * Called to obtain the Icon to be used when rendering a turtle peripheral. Needs to be a "block" 
+	 * type Icon for now, as there is no way to determine which texture sheet an Icon is from by the 
+	 * Icon itself.
+	 * @param turtle Access to the turtle that the peripheral resides on.
+	 * @param side Which side of the turtle (left or right) the peripheral resides on.
+	 * @return The Icon that you wish to be used to render your turtle peripheral.
+	 */
+	public Icon getIcon( ITurtleAccess turtle, TurtleSide side );
 }
